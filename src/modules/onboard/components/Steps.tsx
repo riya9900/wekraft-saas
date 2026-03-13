@@ -69,7 +69,7 @@ export function MultiStepOnboarding() {
       <div className="absolute -top-1/3 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[500px] bg-blue-500/45 blur-[200px] rounded-full pointer-events-none opacity-50" />
 
       {/* Progress Header */}
-      <div className="flex items-center gap-3 absolute top-12">
+      <div className="flex items-center gap-3 absolute top-8">
         {STEPS.map((step) => (
           <React.Fragment key={step.id}>
             <div
@@ -201,7 +201,7 @@ export function MultiStepOnboarding() {
                           className={cn(
                             "relative flex items-start gap-3 p-4 rounded-xl border text-left transition-all duration-200 group overflow-hidden",
                             selected
-                              ? `bg-gradient-to-br ${p.color} ${p.border} shadow-[0_0_20px_rgba(255,255,255,0.06)]`
+                              ? `bg-gradient-to-br from-white/30 to-white/10 shadow-[0_0_20px_rgba(255,255,255,0.06)]`
                               : "bg-white/5 border-white/10 hover:bg-white/[0.08] hover:border-white/20",
                           )}
                         >
@@ -217,7 +217,7 @@ export function MultiStepOnboarding() {
                             <p.icon
                               className={cn(
                                 "w-4 h-4",
-                                selected ? p.accent : "text-white/50",
+                                selected ? p.accent : "text-white",
                               )}
                             />
                           </div>
@@ -227,7 +227,7 @@ export function MultiStepOnboarding() {
                             <p
                               className={cn(
                                 "text-sm font-semibold leading-tight",
-                                selected ? "text-white" : "text-white/70",
+                                selected ? "text-white" : "text-white",
                               )}
                             >
                               {p.label}
@@ -235,7 +235,7 @@ export function MultiStepOnboarding() {
                             <p
                               className={cn(
                                 "text-xs mt-0.5 leading-snug",
-                                selected ? "text-white/60" : "text-white/35",
+                                selected ? "text-white" : "text-white/70",
                               )}
                             >
                               {p.description}
@@ -251,13 +251,12 @@ export function MultiStepOnboarding() {
                             >
                               <div
                                 className={cn(
-                                  "rounded-full p-0.5 border",
+                                  "rounded-full p-0.5 border bg-blue-500",
                                   p.border,
-                                  p.glow,
                                 )}
                               >
                                 <Check
-                                  className={cn("w-2.5 h-2.5", p.accent)}
+                                  className={cn("w-3 h-3 text-white")}
                                 />
                               </div>
                             </motion.div>
@@ -274,10 +273,10 @@ export function MultiStepOnboarding() {
           {/* Action Footer */}
           <div className="flex items-center justify-between mt-10 pt-4 border-t border-white/10">
             <Button
-              variant="ghost"
+              variant="outline"
               onClick={handleBack}
               disabled={currentStep === 1}
-              className="text-muted-foreground hover:text-white disabled:opacity-30 transition-all z-10 text-xs h-8 px-3"
+              className="text-muted-foreground hover:text-white disabled:opacity-30 transition-all z-10 text-sm h-8 px-3"
             >
               <ChevronLeft className="w-3.5 h-3.5 mr-1" />
               Back
