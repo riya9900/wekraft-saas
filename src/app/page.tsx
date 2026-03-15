@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
+import Link from "next/link";
 
 const Home = () => {
   const router = useRouter();
@@ -26,7 +28,49 @@ const Home = () => {
       router.push("/web");
     }
   }, [isAuthenticated, isAuthLoading, router]);
-  return <div>Home</div>;
+  return (
+    <div className="flex h-screen w-full flex-col items-center justify-center bg-black">
+      <div className="flex flex-col items-center gap-2">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="flex items-center gap-3"
+        >
+          <Image
+            src="/logo.svg"
+            alt="logo"
+            width={40}
+            height={40}
+            className="rounded-lg"
+          />
+          <h1 className="text-2xl font-semibold font-pop">WeKraft</h1>
+        </motion.div>
+
+        <motion.h3
+          className="text-lg font-medium text-neutral-400 mt-2"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
+        >
+          Where products are launched with right team on time.
+        </motion.h3>
+
+        <motion.p
+          className="text-sm font-light text-neutral-400 mt-2"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
+        >
+          <span className="underline underline-offset-2">Redirecting...</span>{" "}
+          If u havent redirected visit{" "}
+          <Link href="/web" className="text-blue-500">
+            here
+          </Link>
+        </motion.p>
+      </div>
+    </div>
+  );
 };
 
 export default Home;
