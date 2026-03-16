@@ -12,14 +12,22 @@ import {
   Lock,
   Globe,
   UserPlus,
+  FolderGit,
+  Loader2,
+  Copy,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { STEPS, SOURCES, PURPOSES } from "./StaticContent";
-import { PROJECT_STATUS } from "@/lib/static-store";
+import { PROJECT_STATUS, INVITE_LINK } from "@/lib/static-store";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useMutation } from "convex/react";
+import { toast } from "sonner";
+import { api } from "../../../../convex/_generated/api";
+import { useRouter } from "next/navigation";
+import { nanoid } from "nanoid";
 
 const variants = {
   enter: (direction: number) => ({
@@ -41,6 +49,14 @@ const variants = {
 export function MultiStepOnboarding() {
   const [currentStep, setCurrentStep] = useState(1);
   const [direction, setDirection] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  // Mutations
+  const updateSource = useMutation(api.user.updateUserFoundPlatform);
+  const updatePurposes = useMutation(api.user.updateUserPrimaryUsage);
+  const initProject = useMutation(api.project.projectInit);
+  const completeOnboarding = useMutation(api.user.completeOnboarding);
 
   // Form State
   const [hearAboutUs, setHearAboutUs] = useState("");
@@ -50,13 +66,70 @@ export function MultiStepOnboarding() {
   const [projectName, setProjectName] = useState("");
   const [isPublic, setIsPublic] = useState(true);
   const [projectStatus, setProjectStatus] = useState("");
+  const [generatedInviteLink, setGeneratedInviteLink] = useState("");
+
   // step 4
   const [selectedRepo, setSelectedRepo] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const handleNext = () => {
-    setDirection(1);
+  const handleNext = async () => {
+    try {
+      setIsLoading(true);
+
+      if (currentStep === 1) {
+        if (!hearAboutUs) {
+          toast.error("Please select how you heard about us");
+          return;
+        }
+        await updateSource({ platform: hearAboutUs });
+      }
+
+      if (currentStep === 2) {
+        // optional
+        if (purposes.length > 0) {
+          await updatePurposes({ purposes });
+        }
+      }
+
+      if (currentStep === 3) {
+        if (!projectName || !projectStatus) {
+          toast.error("Please provide project name and status");
+          return;
+        }
+        const inviteCode = nanoid(32);
+        await initProject({
+          projectName,
+          isPublic,
+          projectStatus,
+          inviteLink: inviteCode,
+        });
+        setGeneratedInviteLink(inviteCode);
+      }
+
+      if (currentStep === 5) {
+        await completeOnboarding();
+        toast.success("Welcome to WeKraft!");
+        router.push("/dashboard");
+        return;
+      }
+
+      setDirection(1);
+      setCurrentStep((prev) => Math.min(prev + 1, STEPS.length));
+    } catch (error: any) {
+      console.error(error);
+      if (error.message?.includes("unauthorized") || error.message?.includes("authentication")) {
+        toast.error("Session expired. Please sign in again.");
+      } else {
+        toast.error("An error occurred while saving. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSkip = () => {
     setCurrentStep((prev) => Math.min(prev + 1, STEPS.length));
+    setDirection(1);
   };
 
   const handleBack = () => {
@@ -292,7 +365,7 @@ export function MultiStepOnboarding() {
                   <div className="text-center space-y-2 mb-5">
                     <h2 className="text-2xl font-semibold tracking-tight text-white flex items-center justify-center gap-2">
                       Create your first project
-                      <FolderGit2 className="w-6 h-6 " />
+                      <FolderGit className="w-6 h-6 " />
                     </h2>
                     <p className="text-white/50 text-sm">
                       Create your first project to sync and collab{" "}
@@ -450,19 +523,47 @@ export function MultiStepOnboarding() {
                   </div>
                 </div>
               )}
-
               {/* STEP 5 : INVITE TO PROJECT */}
               {currentStep === 5 && (
-                <div className="space-y-5 relative">
-                  <div className="text-center space-y-2 mb-5">
+                <div className="space-y-6 relative">
+                  <div className="text-center space-y-2 mb-8">
                     <h2 className="text-2xl font-semibold tracking-tight text-white flex items-center justify-center gap-2">
-                      Invite to project
+                      Share invite link
                       <UserPlus className="w-6 h-6 " />
                     </h2>
                     <p className="text-neutral-300 text-sm">
-                      Invite your friends/ Team to join your project and start
+                      Invite your friends or team to join your project and start
                       collaborating
                     </p>
+                  </div>
+
+                  <div className="bg-white/10 border border-white/10 rounded-2xl p-3 space-y-4">
+                    <div className="space-y-2">
+                      <Label className="text-sm text-white">
+                        Project Invite Link
+                      </Label>
+                      <div className="flex gap-5">
+                        <Input
+                          readOnly
+                          value={`${INVITE_LINK}${generatedInviteLink}`}
+                          className="flex-1 truncate bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white font-inter"
+                        />
+                        <Button
+                          variant="default"
+                          size="sm"
+                          className="shrink-0"
+                          onClick={() => {
+                            navigator.clipboard.writeText(
+                              `${INVITE_LINK}${generatedInviteLink}`,
+                            );
+                            toast.success("Link copied to clipboard!");
+                          }}
+                        >
+                          Copy
+                          <Copy className="w-4 h-4 " />
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -474,7 +575,7 @@ export function MultiStepOnboarding() {
             <Button
               variant="outline"
               onClick={handleBack}
-              disabled={currentStep === 1}
+              disabled={currentStep === 1 || isLoading}
               className="text-muted-foreground hover:text-white disabled:opacity-30 transition-all z-10 text-sm h-8 px-3"
             >
               <ChevronLeft className="w-3.5 h-3.5 mr-1" />
@@ -485,7 +586,8 @@ export function MultiStepOnboarding() {
               {isSkip && (
                 <Button
                   variant="default"
-                  onClick={handleNext}
+                  onClick={handleSkip}
+                  disabled={isLoading}
                   className=" text-sm h-8 px-5 transition-all z-10"
                 >
                   Skip <ChevronRight className="w-3.5 h-3.5 ml-1" />
@@ -493,10 +595,20 @@ export function MultiStepOnboarding() {
               )}
               <Button
                 onClick={handleNext}
-                className="bg-white/90 text-sm text-black hover:bg-white font-medium px-6 h-8 transition-all active:scale-95 z-10 cursor-pointer rounded-lg"
+                disabled={isLoading}
+                className="bg-white/90 text-sm text-black hover:bg-white font-medium px-6 h-8 transition-all active:scale-95 z-10 cursor-pointer rounded-lg flex items-center justify-center gap-2"
               >
-                {purposes.length > 0 ? `Continue` : "Continue"}
-                <ChevronRight className="w-3.5 h-3.5 ml-1" />
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Continue</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </>
+                )}
               </Button>
             </div>
           </div>

@@ -108,3 +108,5 @@ export const PROJECT_STATUS = [
   "production",
   "scaling",
 ];
+
+export const INVITE_LINK="http://localhost:3000/";

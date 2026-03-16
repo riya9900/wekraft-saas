@@ -19,7 +19,7 @@ export default defineSchema({
     // For Onboarding
     hasCompletedOnboarding: v.boolean(),
     whereFoundPlatform: v.optional(v.string()),
-    primaryUsage: v.optional(v.string()),
+    primaryUsage: v.optional(v.array(v.string())),
 
     createdAt: v.number(),
     updatedAt: v.number(),
@@ -45,7 +45,7 @@ export default defineSchema({
 
   projects: defineTable({
     projectName: v.string(),
-    description: v.string(),
+    description: v.optional(v.string()),
     tags: v.optional(v.array(v.string())), // (2-5)
     isPublic: v.boolean(),
     // for repo---
@@ -90,6 +90,7 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_owner", ["ownerId"])
+    .index("by_owner_name", ["ownerId", "projectName"])
     .index("by_repository", ["repositoryId"])
     .index("by_public", ["isPublic"])
     .index("by_invite_link", ["inviteLink"]),
