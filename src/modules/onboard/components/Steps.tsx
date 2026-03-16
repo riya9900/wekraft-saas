@@ -7,11 +7,27 @@ import {
   Check,
   SearchAlert,
   HandHeart,
+  FolderGit2,
+  Search,
+  Lock,
+  Globe,
+  UserPlus,
+  FolderGit,
+  Loader2,
+  Copy,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { STEPS, SOURCES, PURPOSES } from "./StaticContent";
+import { PROJECT_STATUS, INVITE_LINK } from "@/lib/static-store";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useMutation } from "convex/react";
+import { toast } from "sonner";
+import { api } from "../../../../convex/_generated/api";
+import { useRouter } from "next/navigation";
+import { nanoid } from "nanoid";
 
 const variants = {
   enter: (direction: number) => ({
@@ -33,14 +49,90 @@ const variants = {
 export function MultiStepOnboarding() {
   const [currentStep, setCurrentStep] = useState(1);
   const [direction, setDirection] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  // Mutations
+  const updateSource = useMutation(api.user.updateUserFoundPlatform);
+  const updatePurposes = useMutation(api.user.updateUserPrimaryUsage);
+  const initProject = useMutation(api.project.projectInit);
+  const completeOnboarding = useMutation(api.user.completeOnboarding);
 
   // Form State
   const [hearAboutUs, setHearAboutUs] = useState("");
   const [purposes, setPurposes] = useState<string[]>([]);
 
-  const handleNext = () => {
-    setDirection(1);
+  // Step 3
+  const [projectName, setProjectName] = useState("");
+  const [isPublic, setIsPublic] = useState(true);
+  const [projectStatus, setProjectStatus] = useState("");
+  const [generatedInviteLink, setGeneratedInviteLink] = useState("");
+
+  // step 4
+  const [selectedRepo, setSelectedRepo] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleNext = async () => {
+    try {
+      setIsLoading(true);
+
+      if (currentStep === 1) {
+        if (!hearAboutUs) {
+          toast.error("Please select how you heard about us");
+          return;
+        }
+        await updateSource({ platform: hearAboutUs });
+      }
+
+      if (currentStep === 2) {
+        // optional
+        if (purposes.length > 0) {
+          await updatePurposes({ purposes });
+        }
+      }
+
+      if (currentStep === 3) {
+        if (!projectName || !projectStatus) {
+          toast.error("Please provide project name and status");
+          return;
+        }
+        const inviteCode = nanoid(32);
+        await initProject({
+          projectName,
+          isPublic,
+          projectStatus,
+          inviteLink: inviteCode,
+        });
+        setGeneratedInviteLink(inviteCode);
+      }
+
+      if (currentStep === 5) {
+        await completeOnboarding();
+        toast.success("Welcome to WeKraft!");
+        router.push("/dashboard");
+        return;
+      }
+
+      setDirection(1);
+      setCurrentStep((prev) => Math.min(prev + 1, STEPS.length));
+    } catch (error: any) {
+      console.error(error);
+      if (
+        error.message?.includes("unauthorized") ||
+        error.message?.includes("authentication")
+      ) {
+        toast.error("Session expired. Please sign in again.");
+      } else {
+        toast.error("An error occurred while saving. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSkip = () => {
     setCurrentStep((prev) => Math.min(prev + 1, STEPS.length));
+    setDirection(1);
   };
 
   const handleBack = () => {
@@ -54,7 +146,7 @@ export function MultiStepOnboarding() {
     );
   };
 
-  const isStep2 = currentStep === 2;
+  const isSkip = currentStep === 2 || currentStep === 4;
 
   return (
     <div className="dark flex flex-col items-center justify-center h-screen p-4 pt-10 relative text-foreground overflow-hidden">
@@ -69,7 +161,7 @@ export function MultiStepOnboarding() {
       <div className="absolute -top-1/3 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[500px] bg-blue-500/45 blur-[200px] rounded-full pointer-events-none opacity-50" />
 
       {/* Progress Header */}
-      <div className="flex items-center gap-3 absolute top-12">
+      <div className="flex items-center gap-3 absolute top-8">
         {STEPS.map((step) => (
           <React.Fragment key={step.id}>
             <div
@@ -121,7 +213,7 @@ export function MultiStepOnboarding() {
                   </div>
 
                   <div className="grid grid-cols-4 gap-5">
-                    {SOURCES.map((source) => { 
+                    {SOURCES.map((source) => {
                       const selected = hearAboutUs === source.id;
                       return (
                         <button
@@ -184,10 +276,14 @@ export function MultiStepOnboarding() {
                 <div className="space-y-5 relative">
                   <div className="text-center space-y-2 mb-5">
                     <h2 className="text-2xl font-semibold tracking-tight text-white ">
-                      What brings you to WeKraft <HandHeart className="w-6 h-6 inline ml-2 text-white" />
+                      What brings you to WeKraft{" "}
+                      <HandHeart className="w-6 h-6 inline ml-2 text-white" />
                     </h2>
                     <p className="text-white/70 text-sm">
-                      Pick one or more — helps us tailor your experience
+                      Pick one or more — helps us tailor your experience{" "}
+                      <span className="text-white relative font-inter ">
+                        (Optional)
+                      </span>
                     </p>
                   </div>
 
@@ -201,7 +297,7 @@ export function MultiStepOnboarding() {
                           className={cn(
                             "relative flex items-start gap-3 p-4 rounded-xl border text-left transition-all duration-200 group overflow-hidden",
                             selected
-                              ? `bg-gradient-to-br ${p.color} ${p.border} shadow-[0_0_20px_rgba(255,255,255,0.06)]`
+                              ? `bg-gradient-to-br from-white/30 to-white/10 shadow-[0_0_20px_rgba(255,255,255,0.06)]`
                               : "bg-white/5 border-white/10 hover:bg-white/[0.08] hover:border-white/20",
                           )}
                         >
@@ -217,7 +313,7 @@ export function MultiStepOnboarding() {
                             <p.icon
                               className={cn(
                                 "w-4 h-4",
-                                selected ? p.accent : "text-white/50",
+                                selected ? p.accent : "text-white",
                               )}
                             />
                           </div>
@@ -227,7 +323,7 @@ export function MultiStepOnboarding() {
                             <p
                               className={cn(
                                 "text-sm font-semibold leading-tight",
-                                selected ? "text-white" : "text-white/70",
+                                selected ? "text-white" : "text-white",
                               )}
                             >
                               {p.label}
@@ -235,7 +331,7 @@ export function MultiStepOnboarding() {
                             <p
                               className={cn(
                                 "text-xs mt-0.5 leading-snug",
-                                selected ? "text-white/60" : "text-white/35",
+                                selected ? "text-white" : "text-white/70",
                               )}
                             >
                               {p.description}
@@ -251,14 +347,11 @@ export function MultiStepOnboarding() {
                             >
                               <div
                                 className={cn(
-                                  "rounded-full p-0.5 border",
+                                  "rounded-full p-0.5 border bg-blue-500",
                                   p.border,
-                                  p.glow,
                                 )}
                               >
-                                <Check
-                                  className={cn("w-2.5 h-2.5", p.accent)}
-                                />
+                                <Check className={cn("w-3 h-3 text-white")} />
                               </div>
                             </motion.div>
                           )}
@@ -268,39 +361,315 @@ export function MultiStepOnboarding() {
                   </div>
                 </div>
               )}
+
+              {/* --- STEP 3 : CREATE FIRST PROJECT */}
+              {currentStep === 3 && (
+                <div className="space-y-5 relative">
+                  <div className="text-center space-y-2 mb-5">
+                    <h2 className="text-2xl font-semibold tracking-tight text-white flex items-center justify-center gap-2">
+                      Create your first project
+                      <FolderGit className="w-6 h-6 " />
+                    </h2>
+                    <p className="text-white/50 text-sm">
+                      Create your first project to sync and collab{" "}
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="projectName"
+                        className="text-sm text-white"
+                      >
+                        Project Name
+                      </Label>
+                      <Input
+                        id="projectName"
+                        placeholder={"Acme-saas"}
+                        className="bg-white/5 border-white/10 focus:ring-1 focus:ring-white/20"
+                        value={projectName}
+                        onChange={(e) => setProjectName(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="space-y-3">
+                      <Label className="text-sm text-white">
+                        Status{" "}
+                        <span className="text-xs normal-case tracking-tight font-inter text-neutral-300 ml-1">
+                          (will help the community to know about your project.)
+                        </span>
+                      </Label>
+                      <div className="grid grid-cols-3 gap-x-8 gap-y-3">
+                        {PROJECT_STATUS.map((status) => {
+                          const isSelected = projectStatus === status;
+
+                          return (
+                            <button
+                              key={status}
+                              onClick={() => setProjectStatus(status)}
+                              className={cn(
+                                "relative px-5 py-2 rounded-lg border text-xs transition-all duration-300 capitalize overflow-hidden group cursor-pointer",
+                                isSelected
+                                  ? "bg-white/20 border-white text-white opacity-100 scale-[1.02] shadow-[0_0_20px_rgba(255,255,255,0.05)]"
+                                  : "bg-white/10 border-white/10 text-neutral-300 hover:bg-white/10 hover:border-white/20 hover:text-white",
+                              )}
+                            >
+                              <span
+                                className={cn(
+                                  "relative z-10 transition-colors duration-300",
+                                  isSelected ? "font-medium" : "font-medium",
+                                )}
+                              >
+                                {status}
+                              </span>
+
+                              {isSelected && (
+                                <motion.div
+                                  layoutId="status-active-glow"
+                                  className="absolute inset-0 bg-white/5"
+                                  initial={false}
+                                  transition={{
+                                    type: "spring",
+                                    bounce: 0.2,
+                                    duration: 0.5,
+                                  }}
+                                />
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 pt-2">
+                      <Label className="text-sm text-white">Visibility</Label>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div
+                          onClick={() => setIsPublic(true)}
+                          className={cn(
+                            "cursor-pointer p-2 rounded-xl border flex items-center gap-3 transition-all",
+                            isPublic
+                              ? "bg-white/10 border-white text-white"
+                              : "bg-white/5 border-white/5 text-muted-foreground hover:bg-white/10",
+                          )}
+                        >
+                          <div
+                            className={cn(
+                              "p-2 rounded-full",
+                              isPublic ? "bg-white text-black" : "bg-white/10",
+                            )}
+                          >
+                            <Globe className="w-4 h-4" />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium">Public</span>
+                            <span className="text-[11px] ">
+                              Community can see and collab
+                            </span>
+                          </div>
+                        </div>
+
+                        <div
+                          onClick={() => setIsPublic(false)}
+                          className={cn(
+                            "cursor-pointer p-2 rounded-xl border flex items-center gap-3 transition-all",
+                            !isPublic
+                              ? "bg-white/20 border-white text-white"
+                              : "bg-white/5 border-white/5 text-muted-foreground hover:bg-white/10",
+                          )}
+                        >
+                          <div
+                            className={cn(
+                              "p-2 rounded-full",
+                              !isPublic ? "bg-white text-black" : "bg-white/10",
+                            )}
+                          >
+                            <Lock className="w-4 h-4" />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium">Private</span>
+                            <span className="text-[11px] ">
+                              Only Invited one can see & collab.
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* STE 4 :  REPO CONNECT ( OPTIONAL) --- */}
+              {currentStep === 4 && (
+                <div className="space-y-5 relative">
+                  <div className="text-center space-y-2 mb-5">
+                    <h2 className="text-2xl font-semibold tracking-tight text-white flex items-center justify-center gap-2">
+                      Connect your repository
+                      <FolderGit2 className="w-6 h-6 " />
+                    </h2>
+                    <p className="text-white/50 text-sm">
+                      Connect your github repository to sync and collab{" "}
+                      <span className="text-white relative font-inter ">
+                        (Optional)
+                      </span>
+                    </p>
+                  </div>
+
+                  <div className="relative flex items-center">
+                    <Search className="absolute left-3 top-2 w-4 h-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search repositories..."
+                      className="bg-white/5 border-white/10 pl-10 mb-4 focus:ring-1 focus:ring-white/20"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+                </div>
+              )}
+              {/* STEP 5 : INVITE TO PROJECT */}
+              {currentStep === 5 && (
+                <div className="space-y-6 relative">
+                  <div className="text-center space-y-2 mb-8">
+                    <h2 className="text-2xl font-semibold tracking-tight text-white flex items-center justify-center gap-2">
+                      Share invite link
+                      <UserPlus className="w-6 h-6 " />
+                    </h2>
+                    <p className="text-neutral-300 text-sm">
+                      Invite your friends or team to join your project and start
+                      collaborating
+                    </p>
+                  </div>
+
+                  <div className="bg-white/10 border border-white/10 rounded-2xl p-3 space-y-4">
+                    <div className="space-y-2">
+                      <Label className="text-sm text-white">
+                        Project Invite Link
+                      </Label>
+                      <div className="flex gap-5">
+                        <Input
+                          readOnly
+                          value={`${INVITE_LINK}${generatedInviteLink}`}
+                          className="flex-1 truncate bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white font-inter"
+                        />
+                        <Button
+                          variant="default"
+                          size="sm"
+                          className="shrink-0"
+                          onClick={() => {
+                            navigator.clipboard.writeText(
+                              `${INVITE_LINK}${generatedInviteLink}`,
+                            );
+                            toast.success("Link copied to clipboard!");
+                          }}
+                        >
+                          Copy
+                          <Copy className="w-4 h-4 " />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 my-5">
+                    <div className="h-px flex-1 bg-white/30"></div>
+                    <span className="text-sm text-white capitalize whitespace-nowrap">
+                      share it via
+                    </span>
+                    <div className="h-px flex-1 bg-white/30"></div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-4">
+                    <Button
+                      variant="outline"
+                      className="h-18 flex flex-col items-center justify-center gap-2 bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 transition-all group"
+                      onClick={() => {
+                        navigator.clipboard.writeText(`${INVITE_LINK}${generatedInviteLink}`);
+                        toast.success("Link copied for WhatsApp!");
+                      }}
+                    >
+                      <Image 
+                        src="/whatsapp.png" 
+                        alt="WhatsApp" 
+                        width={24} 
+                        height={24} 
+                        className="opacity-70 group-hover:opacity-100 transition-opacity"
+                      />
+                      <span className="text-[10px] text-white/50 group-hover:text-white transition-colors">WhatsApp</span>
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      className="h-18 flex flex-col items-center justify-center gap-2 bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 transition-all group"
+                      onClick={() => window.open("https://discord.com", "_blank")}
+                    >
+                      <Image 
+                        src="/discord.png" 
+                        alt="Discord" 
+                        width={24} 
+                        height={24} 
+                        className="opacity-70 group-hover:opacity-100 transition-opacity"
+                      />
+                      <span className="text-[10px] text-white/50 group-hover:text-white transition-colors">Discord</span>
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      className="h-18 flex flex-col items-center justify-center gap-2 bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 transition-all group"
+                      onClick={() => window.open("https://slack.com", "_blank")}
+                    >
+                      <Image 
+                        src="/slack.png" 
+                        alt="Slack" 
+                        width={24} 
+                        height={24} 
+                        className="opacity-70 group-hover:opacity-100 transition-opacity"
+                      />
+                      <span className="text-[10px] text-white/50 group-hover:text-white transition-colors">Slack</span>
+                    </Button>
+                  </div>
+                </div>
+              )}
             </motion.div>
           </AnimatePresence>
 
           {/* Action Footer */}
           <div className="flex items-center justify-between mt-10 pt-4 border-t border-white/10">
             <Button
-              variant="ghost"
+              variant="outline"
               onClick={handleBack}
-              disabled={currentStep === 1}
-              className="text-muted-foreground hover:text-white disabled:opacity-30 transition-all z-10 text-xs h-8 px-3"
+              disabled={currentStep === 1 || isLoading}
+              className="text-muted-foreground hover:text-white disabled:opacity-30 transition-all z-10 text-sm h-8 px-3"
             >
               <ChevronLeft className="w-3.5 h-3.5 mr-1" />
               Back
             </Button>
 
             <div className="flex items-center gap-5">
-              {isStep2 && (
+              {isSkip && (
                 <Button
-                  variant="outline"
-                  onClick={handleNext}
-                  className="text-white/70 hover:text-white text-sm h-8 px-5 transition-all z-10"
+                  variant="default"
+                  onClick={handleSkip}
+                  disabled={isLoading}
+                  className=" text-sm h-8 px-5 transition-all z-10"
                 >
                   Skip <ChevronRight className="w-3.5 h-3.5 ml-1" />
                 </Button>
               )}
               <Button
                 onClick={handleNext}
-                className="bg-white/90 text-xs text-black hover:bg-white font-medium px-6 h-8 transition-all active:scale-95 z-10 cursor-pointer rounded-lg"
+                disabled={isLoading}
+                className="bg-white/90 text-sm text-black hover:bg-white font-medium px-6 h-8 transition-all active:scale-95 z-10 cursor-pointer rounded-lg flex items-center justify-center gap-2"
               >
-                {isStep2 && purposes.length > 0
-                  ? `Continue (${purposes.length})`
-                  : "Continue"}
-                <ChevronRight className="w-3.5 h-3.5 ml-1" />
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Continue</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </>
+                )}
               </Button>
             </div>
           </div>

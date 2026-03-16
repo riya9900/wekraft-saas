@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import DesignCarousel from "@/modules/auth/components/Design";
+import { SignInButton } from "@clerk/nextjs";
 
 export default async function LoginPage() {
   return (
@@ -19,8 +20,8 @@ export default async function LoginPage() {
         <div className="max-w-6xl w-full z-10 grid lg:grid-cols-2 gap-12 items-center justify-center h-full relative">
           <div className="space-y-14">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[11px] font-medium text-neutral-400 tracking-wider uppercase">
-              <span className="size-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.8)]" />
-              New Era of Management
+              <span className="size-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(96,165,250,0.8)]" />
+              New Era of Collaboration
             </div>
             {/* main text */}
             <div className="space-y-6">
@@ -32,8 +33,8 @@ export default async function LoginPage() {
               </h1>
               <p className="text-base text-neutral-400 leading-relaxed max-w-md">
                 WeKraft turns your GitHub activity into actionable insights.
-                From collaboration To deployments — everything is tracked and
-                automated.
+                From collaboration To Project Management — Build together
+                frictionless.
               </p>
             </div>
 
@@ -46,7 +47,7 @@ export default async function LoginPage() {
             {/* CARD LOGIN */}
             <div className="w-full max-w-[400px] space-y-8">
               <div className="p-10 rounded-lg  bg-linear-to-b from-black via-black/60  to-transparent   relative group">
-                <div className="absolute -inset-px bg-linear-to-b from-white/10 to-transparent rounded-lg -z-10 group-hover:from-white/20 transition-all duration-500" />
+                <div className="absolute -inset-px bg-linear-to-b to-transparent rounded-lg -z-10 from-white/20 transition-all duration-500" />
 
                 <div className="space-y-7 text-center">
                   <div className="flex items-center justify-center">
@@ -62,10 +63,17 @@ export default async function LoginPage() {
                   </div>
 
                   <div className="space-y-5">
-                    <Button className="w-full h-9 bg-white text-black hover:bg-neutral-200 text-sm font-medium flex items-center justify-center gap-3 transition-all rounded-lg">
-                      <Github className="size-5 shrink-0" />
-                      Continue with GitHub
-                    </Button>
+                    <SignInButton>
+                      <Button className="w-full h-9 bg-white text-black hover:bg-neutral-200 text-sm font-medium flex items-center justify-center gap-3 transition-all rounded-lg">
+                        <Image
+                          src="/github.png"
+                          alt="Github"
+                          width={25}
+                          height={25}
+                        />
+                        Continue with GitHub
+                      </Button>
+                    </SignInButton>
                   </div>
 
                   <div className="relative">
@@ -100,7 +108,7 @@ export default async function LoginPage() {
               </div>
 
               {/* Bottom Card Footer */}
-              <div className="text-center bg-linear-to-br from-gray-700 to-black w-fit mx-auto py-2 px-8 rounded-full -mb-10 hover:to-gray-950 transition-all duration-300">
+              <div className="text-center bg-linear-to-br from-gray-700 to-gray-950 w-fit mx-auto py-2 px-8 rounded-full -mb-10 transition-all duration-300">
                 <p className="text-xs italic cursor-pointer">
                   Star WeKraft on GitHub{" "}
                   <LucideGithub className="inline ml-2" size={20} />
