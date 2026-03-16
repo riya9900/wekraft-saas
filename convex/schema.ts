@@ -46,7 +46,7 @@ export default defineSchema({
   projects: defineTable({
     projectName: v.string(),
     description: v.string(),
-    tags: v.array(v.string()), // (2-5)
+    tags: v.optional(v.array(v.string())), // (2-5)
     isPublic: v.boolean(),
     // for repo---
     repositoryId: v.optional(v.id("repositories")),

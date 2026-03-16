@@ -11,6 +11,7 @@ import {
   Search,
   Lock,
   Globe,
+  UserPlus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -332,24 +333,30 @@ export function MultiStepOnboarding() {
                               onClick={() => setProjectStatus(status)}
                               className={cn(
                                 "relative px-5 py-2 rounded-lg border text-xs transition-all duration-300 capitalize overflow-hidden group",
-                                isSelected 
-                                  ? "bg-white/20 border-white text-white opacity-100 scale-[1.02] shadow-[0_0_20px_rgba(255,255,255,0.05)]" 
-                                  : "bg-white/5 border-white/10 text-neutral-400 hover:opacity-100 hover:bg-white/10 hover:border-white/20 hover:text-white"
+                                isSelected
+                                  ? "bg-white/20 border-white text-white opacity-100 scale-[1.02] shadow-[0_0_20px_rgba(255,255,255,0.05)]"
+                                  : "bg-white/5 border-white/10 text-neutral-400 hover:opacity-100 hover:bg-white/10 hover:border-white/20 hover:text-white",
                               )}
                             >
-                              <span className={cn(
-                                "relative z-10 transition-colors duration-300",
-                                isSelected ? "font-medium" : "font-medium"
-                              )}>
+                              <span
+                                className={cn(
+                                  "relative z-10 transition-colors duration-300",
+                                  isSelected ? "font-medium" : "font-medium",
+                                )}
+                              >
                                 {status}
                               </span>
-                              
+
                               {isSelected && (
                                 <motion.div
                                   layoutId="status-active-glow"
                                   className="absolute inset-0 bg-white/5"
                                   initial={false}
-                                  transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
+                                  transition={{
+                                    type: "spring",
+                                    bounce: 0.2,
+                                    duration: 0.5,
+                                  }}
                                 />
                               )}
                             </button>
@@ -359,9 +366,7 @@ export function MultiStepOnboarding() {
                     </div>
 
                     <div className="space-y-3 pt-2">
-                      <Label className="text-sm text-white">
-                        Visibility
-                      </Label>
+                      <Label className="text-sm text-white">Visibility</Label>
                       <div className="grid grid-cols-2 gap-3">
                         <div
                           onClick={() => setIsPublic(true)}
@@ -445,6 +450,22 @@ export function MultiStepOnboarding() {
                   </div>
                 </div>
               )}
+
+              {/* STEP 5 : INVITE TO PROJECT */}
+              {currentStep === 5 && (
+                <div className="space-y-5 relative">
+                  <div className="text-center space-y-2 mb-5">
+                    <h2 className="text-2xl font-semibold tracking-tight text-white flex items-center justify-center gap-2">
+                      Invite to project
+                      <UserPlus className="w-6 h-6 " />
+                    </h2>
+                    <p className="text-neutral-300 text-sm">
+                      Invite your friends/ Team to join your project and start
+                      collaborating
+                    </p>
+                  </div>
+                </div>
+              )}
             </motion.div>
           </AnimatePresence>
 
@@ -474,7 +495,7 @@ export function MultiStepOnboarding() {
                 onClick={handleNext}
                 className="bg-white/90 text-sm text-black hover:bg-white font-medium px-6 h-8 transition-all active:scale-95 z-10 cursor-pointer rounded-lg"
               >
-                {isSkip && purposes.length > 0 ? `Continue` : "Continue"}
+                {purposes.length > 0 ? `Continue` : "Continue"}
                 <ChevronRight className="w-3.5 h-3.5 ml-1" />
               </Button>
             </div>
