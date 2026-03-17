@@ -1,11 +1,11 @@
-import { Github, LucideGithub } from "lucide-react";
+import { Ghost, Github, LucideGithub, LucideMail } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import DesignCarousel from "@/modules/auth/components/Design";
-import { SignInButton } from "@clerk/nextjs";
+import { SignInButton, SignUpButton } from "@clerk/nextjs";
 
 export default async function LoginPage() {
   return (
@@ -25,7 +25,7 @@ export default async function LoginPage() {
             </div>
             {/* main text */}
             <div className="space-y-6">
-              <h1 className="text-5xl md:text-[64px] font-semibold  tracking-normal leading-[1.05] font-pop">
+              <h1 className="text-5xl md:text-[60px] font-semibold  tracking-normal leading-[1.05] font-pop">
                 The Platform for <br />
                 <span className="text-transparent bg-clip-text bg-linear-to-b from-white to-neutral-500  font-sans font-bold">
                   Modern Collaboration.
@@ -38,7 +38,7 @@ export default async function LoginPage() {
               </p>
             </div>
 
-            <div className="">
+            <div className="h-[120px] flex items-center">
               <DesignCarousel />
             </div>
           </div>
@@ -49,20 +49,21 @@ export default async function LoginPage() {
               <div className="p-10 rounded-lg  bg-linear-to-b from-black via-black/60  to-transparent   relative group">
                 <div className="absolute -inset-px bg-linear-to-b to-transparent rounded-lg -z-10 from-white/20 transition-all duration-500" />
 
-                <div className="space-y-7 text-center">
+                <div className="space-y-6 text-center">
                   <div className="flex items-center justify-center">
                     <Image src="/logo.svg" alt="Logo" width={40} height={40} />
                   </div>
-                  <div className="space-y-2">
-                    <h2 className="text-2xl font-semibold tracking-tight">
-                      Login to <span className="font-pop">WeKraft</span>
+                  <div className="space-y-3">
+                    <h2 className="text-3xl font-semibold tracking-tight">
+                      Welcome Back
                     </h2>
-                    <p className="text-[13px] text-neutral-500">
-                      Start Collaboration by Continuing With GitHub
+                    <p className="text-[13px] text-neutral-300">
+                      Access your dashboard, manage repositories and collaborate
+                      with your team.
                     </p>
                   </div>
 
-                  <div className="space-y-5">
+                  <div className="space-y-3">
                     <SignInButton>
                       <Button className="w-full h-9 bg-white text-black hover:bg-neutral-200 text-sm font-medium flex items-center justify-center gap-3 transition-all rounded-lg">
                         <Image
@@ -74,11 +75,25 @@ export default async function LoginPage() {
                         Continue with GitHub
                       </Button>
                     </SignInButton>
+
+                    <h4 className="text-[11px] text-neutral-400 mt-4">
+                      ALTERNATIVE
+                    </h4>
+
+                    <SignUpButton>
+                      <Button
+                        variant={"ghost"}
+                        className="w-full cursor-pointer text-sm text-neutral-300"
+                      >
+                        <LucideMail className="size-4" />
+                        Continue with Email
+                      </Button>
+                    </SignUpButton>
                   </div>
 
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t border-white/10" />
+                      <span className="w-full border-t border-white/20" />
                     </div>
                     <div className="relative flex justify-center text-[10px] uppercase tracking-widest">
                       <span className="bg-black/50 px-3 text-neutral-400">

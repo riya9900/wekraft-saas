@@ -26,7 +26,8 @@ export const createNewUser = mutation({
       name: identity?.name || "",
       clerkToken: identity?.tokenIdentifier!,
       email: identity?.email!,
-      githubUsername: identity.nickname ?? undefined,
+      githubUsername: identity.nickname,
+      avatarUrl: identity.pictureUrl,
       accountType: "free",
       hasCompletedOnboarding: false,
       createdAt: Date.now(),
@@ -84,6 +85,7 @@ export const updateUserSkills = mutation({
     });
   },
 });
+
 // ==============================
 // UPDATES USER FOR ONBOARDING
 // =============================

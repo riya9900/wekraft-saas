@@ -53,7 +53,7 @@ const Home = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
         >
-          Where products are launched with right team on time.
+          Find team ,Match skills ,Launch products & avoid Deadlines
         </motion.h3>
 
         <motion.p
@@ -62,9 +62,9 @@ const Home = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
         >
-          <span className="underline underline-offset-2">Redirecting...</span>{" "}
+          <span className="">Redirecting...</span>{" "}
           If u havent redirected visit{" "}
-          <Link href="/web" className="text-blue-500">
+          <Link href="/web" className="text-blue-500 underline underline-offset-2">
             here
           </Link>
         </motion.p>
