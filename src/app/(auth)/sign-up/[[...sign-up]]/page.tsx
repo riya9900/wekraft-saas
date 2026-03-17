@@ -1,12 +1,12 @@
-import { SignIn } from "@clerk/nextjs";
+import { SignUp } from "@clerk/nextjs";
 
 export default function Page() {
   return (
     <div className="h-screen w-full dark bg-black relative flex items-center justify-center">
       <div className="z-10 relative">
-        <SignIn
+        <SignUp
           forceRedirectUrl="/auth/callback"
-          signUpForceRedirectUrl="/auth/callback"
+          signInForceRedirectUrl="/auth/callback"
         />
       </div>
       <div className="absolute top-0 right-40 w-full max-w-[840px] h-[400px] bg-blue-500/30 blur-[200px] rounded-full pointer-events-none z-0" />
