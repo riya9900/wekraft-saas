@@ -66,6 +66,14 @@ function deriveArchetype(
   return { archetype: "The Merger", archetypeTagline: "Solid contributor." };
 }
 
+function getTier(score: number): string {
+  if (score >= 250) return "ELITE";
+  if (score >= 180) return "PLATINUM";
+  if (score >= 120) return "GOLD";
+  if (score >= 70) return "SILVER";
+  return "BRONZE";
+}
+
 export function calculateImpactScore(stats: GitHubStats): ImpactScoreResult {
   const { weights, commitCapPerDay, scoreDivisor, penaltyFloor } = CONFIG;
 
@@ -86,11 +94,16 @@ export function calculateImpactScore(stats: GitHubStats): ImpactScoreResult {
     prs: stats.totalPRs * weights.prs * mergeMultiplier,
     issues: stats.totalIssuesClosed * weights.issues,
     reviews: stats.totalReviews * weights.reviews,
+    mergedPrs: stats.totalMergedPRs * weights.mergedPrs,
     mergeRateBonus: stats.totalPRs * weights.prs * (mergeMultiplier - 1),
   };
 
   const weightedActivity =
-    breakdown.commits + breakdown.prs + breakdown.issues + breakdown.reviews;
+    breakdown.commits +
+    breakdown.prs +
+    breakdown.issues +
+    breakdown.reviews +
+    breakdown.mergedPrs;
 
   // Age normalization
   const ageFactor = Math.max(Math.sqrt(stats.accountAgeInYears), 0.5);
@@ -233,6 +246,11 @@ export function calculateImpactScore(stats: GitHubStats): ImpactScoreResult {
 
   return {
     rawScore,
+    displayScore: rawScore,
+    tier: getTier(rawScore),
+    eliteBadge: rawScore >= 200 ? "Elite Contributor" : null,
+    weightedActivity,
+    consistencyBonus,
     archetype,
     archetypeTagline,
     breakdown,

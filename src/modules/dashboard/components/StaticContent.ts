@@ -38,6 +38,7 @@ export interface ImpactScoreResult {
     prs: number;
     issues: number;
     reviews: number;
+    mergedPrs: number;
     mergeRateBonus: number;
   };
   signals: {
@@ -48,6 +49,11 @@ export interface ImpactScoreResult {
     isCommitSpammer: boolean;
     isCollaborationWeak: boolean;
   };
+  displayScore: number;
+  tier: string;
+  eliteBadge: string | null;
+  weightedActivity: number;
+  consistencyBonus: number;
   penalties: PenaltyEntry[];
   bonuses: BonusEntry[];
   penaltyFloorApplied: boolean;
@@ -57,6 +63,7 @@ export const CONFIG = {
   weights: {
     commits: 1,
     prs: 3,
+    mergedPrs: 2,
     issues: 2.5,
     reviews: 2,
   },

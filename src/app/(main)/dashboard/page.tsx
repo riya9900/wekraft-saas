@@ -25,6 +25,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import ContributionGraph from "@/modules/dashboard/components/ContributionGraph";
+import { PieChartVariant1 } from "@/modules/dashboard/components/PieChart";
 
 export default function DashboardPage() {
   const user = useConvexQuery(api.user.getCurrentUser);
@@ -238,11 +239,27 @@ export default function DashboardPage() {
                     : "grid-cols-[minmax(0,1fr)_360px] gap-10 2xl:gap-14",
                 )}
               >
+                {/* Left */}
                 <Card className="p-4 bg-linear-to-b from-accent/40 to-transparent dark:to-black">
                   <CardContent className="pt-6">
                     <ContributionGraph />
                   </CardContent>
                 </Card>
+
+                {/* Right */}
+                <div className="w-full">
+                  {dashboardStats ? (
+                    <Card className="p-2 bg-linear-to-b from-accent/40 to-transparent dark:to-black">
+                      <CardContent>
+                        <PieChartVariant1 stats={dashboardStats} />
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    <div>
+                      <Skeleton className="w-full h-60" />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}
