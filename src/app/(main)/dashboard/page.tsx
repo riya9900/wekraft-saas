@@ -30,16 +30,25 @@ import {
   PieChartVariant1,
   ScoreDetailsDialog,
 } from "@/modules/dashboard/components/PieChart";
+import { GitHubStats } from "@/modules/dashboard/components/StaticContent";
 
 export default function DashboardPage() {
   const user = useConvexQuery(api.user.getCurrentUser);
-  const { open: sidebarOpen, isMobile } = useSidebar();
+  const { open: sidebarOpen } = useSidebar();
   const [activeTab, setActiveTab] = useState("stats");
 
   const activePlan = user ? getActiveUserPlan(user as any) : "free";
   const limits = user ? getPlanLimits(user as any) : null;
   const showUpgrade =
     !!user && (activePlan === "free" || activePlan === "plus");
+
+  // const demoDashboardStats: GitHubStats = {
+  //   totalCommits: 1000,
+  //   totalPRs: 80,
+  //   totalMergedPRs: 60,
+  //   totalIssuesClosed: 40,
+  //   totalReviews: 20,
+  // };
 
   // Query 1 : dashboardStats
   const {
@@ -49,8 +58,8 @@ export default function DashboardPage() {
   } = useQuery({
     queryKey: ["dashboardStats", user?.githubUsername],
     queryFn: () => getDashboardStats(user?.githubUsername || ""),
-    staleTime: 30 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
+    staleTime: 30 * 60 * 1000, 
+    gcTime: 30 * 60 * 1000, 
     refetchOnWindowFocus: false,
     enabled: !!user?.githubUsername,
   });

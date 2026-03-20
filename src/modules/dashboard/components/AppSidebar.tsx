@@ -59,13 +59,11 @@ import {
   Wallet,
 } from "lucide-react";
 
-
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
@@ -86,7 +84,7 @@ export const AppSidebar = () => {
     api.user.getCurrentUser,
   );
 
-//   const projects = useQuery(api.project.getProjects);
+  //   const projects = useQuery(api.project.getProjects);
 
   useEffect(() => {
     setMounted(true);
@@ -97,7 +95,7 @@ export const AppSidebar = () => {
   };
 
   return (
-    <Sidebar collapsible="icon" className="cursor-move">
+    <Sidebar collapsible="icon" className="">
       <SidebarHeader className="border-b ">
         <div className="flex items-center justify-center gap-3 px-3 py-3">
           <Image
@@ -110,7 +108,6 @@ export const AppSidebar = () => {
           <h1 className="font-bold font-pop text-xl group-data-[collapsible=icon]:hidden">
             WeKraft
           </h1>
-
         </div>
         {user === undefined ? (
           <div className="flex items-center gap-4 my-1 mx-auto border px-6 py-2 bg-sidebar-accent/30 rounded-md w-full">
@@ -138,12 +135,77 @@ export const AppSidebar = () => {
           </div>
         )}
       </SidebarHeader>
-      <SidebarContent className="flex flex-col px-3 py-3 relative overflow-y-scroll scroll-smooth">
-      
+      <SidebarContent className="flex flex-col px-3 py-5 relative overflow-y-scroll scroll-smooth">
+        {/* 1 */}
+        <SidebarMenu className="flex flex-col gap-3">
+          <SidebarMenuButton
+            asChild
+            data-active={isActive("/dashboard")}
+            className="group relative overflow-hidden"
+          >
+            <Link
+              href="/dashboard"
+              className="relative z-10 flex items-center gap-3 px-3 py-2 dark:data-[active=true]:text-white data-[active=true]:text-gray-700"
+            >
+              <LucideLayoutDashboard className="h-5 w-5" />
+              <span className="text-sm">Dashboard</span>
+              <span
+                className="
+        pointer-events-none absolute inset-0 -z-10
+        opacity-0 transition-opacity
+        group-data-[active=true]:opacity-100
+        bg-linear-to-l from-blue-600/80 dark:from-blue-600/50 via-blue-600/10  to-transparent
+      "
+              />
+            </Link>
+          </SidebarMenuButton>
+          {/* 2 */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <SidebarMenuButton
+                data-active={isActive("/dashboard/community")}
+                className="group relative overflow-hidden"
+              >
+                <div className="relative z-10 flex items-center gap-3 w-full text-muted-foreground">
+                  <Users className="h-5 w-5" />
+                  <span className="text-sm">Community</span>
+                  <ChevronRight className="h-4 w-4 ml-auto" />
+                  <span className="" />
+                </div>
+              </SidebarMenuButton>
+            </PopoverTrigger>
+
+            <PopoverContent side="right" className="w-56 p-2">
+              <div className="flex flex-col gap-1">
+                <Link
+                  href="/dashboard/community?mode=discover"
+                  className="flex items-center gap-2 rounded px-2 py-1 text-sm text-base hover:bg-accent"
+                >
+                  <Compass className="h-4 w-4" />
+                  Discover Projects
+                </Link>
+
+                <Link
+                  href="/dashboard/community?mode=bounties"
+                  className="flex items-center gap-2 rounded px-2 py-1 text-sm hover:bg-accent"
+                >
+                  <Gift className="h-4 w-4" />
+                  Open Bounties
+                </Link>
+
+                <Link
+                  href="/dashboard/community?mode=find-team"
+                  className="flex items-center gap-2 rounded px-2 py-1 text-sm hover:bg-accent"
+                >
+                  <UserPlus className="h-4 w-4" />
+                  Find Teammates
+                </Link>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="border-t px-2 py-2 group-data-[collapsible=icon]:hidden">
-       
-      </SidebarFooter>
+      <SidebarFooter className="border-t px-2 py-2 group-data-[collapsible=icon]:hidden"></SidebarFooter>
     </Sidebar>
   );
 };

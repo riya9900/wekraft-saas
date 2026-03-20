@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/chart";
 import { Info, Waypoints } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -236,10 +235,10 @@ export function ScoreDetailsDialog({
               </div>
               <div className="flex flex-col p-2 rounded-lg bg-accent/20 border border-border/30">
                 <span className="text-[10px] text-muted-foreground uppercase">
-                  Age (Y)
+                  Merged PRs
                 </span>
                 <span className="text-sm font-bold font-mono">
-                  {stats.accountAgeInYears.toFixed(1)}
+                  {stats.totalMergedPRs}
                 </span>
               </div>
               <div className="flex flex-col p-2 rounded-lg bg-accent/20 border border-border/30">
