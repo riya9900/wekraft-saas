@@ -147,6 +147,7 @@ const RepositoriesPage = () => {
           selectedRepo={selectedRepo}
           setSelectedRepo={setSelectedRepo}
           unlinkedProjects={unlinkedProjects}
+          connectedRepos={connectedRepos}
         />
       </div>
     </div>

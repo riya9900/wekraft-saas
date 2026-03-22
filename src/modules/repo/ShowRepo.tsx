@@ -45,6 +45,7 @@ interface RepositoryListProps {
   selectedRepo: { owner: string; repo: string } | null;
   setSelectedRepo: (data: { owner: string; repo: string }) => void;
   unlinkedProjects: Doc<"projects">[] | undefined;
+  connectedRepos: any[] | undefined;
 }
 
 const ITEMS_PER_PAGE = 5;
@@ -54,6 +55,7 @@ const ShowRepo = ({
   selectedRepo,
   setSelectedRepo,
   unlinkedProjects,
+  connectedRepos,
 }: RepositoryListProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isConnecting, setIsConnecting] = useState<number | null>(null);
@@ -184,102 +186,124 @@ const ShowRepo = ({
               </p>
             </div>
           ) : (
-            filteredRepos.map((repo: Repository) => (
-              <div
-                key={repo.id}
-                onClick={() =>
-                  setSelectedRepo({ owner: repo.owner.login, repo: repo.name })
-                }
-                className={cn(
-                  "w-full flex flex-col space-y-4 p-4 rounded-xl border transition-all group cursor-pointer bg-accent/10 text-primary border-primary/10 hover:border-primary/10 hover:bg-accent/30",
-                )}
-              >
-                <div className="flex w-full justify-between items-start gap-4">
-                  <div className="flex items-start gap-3 min-w-0">
-                    <div className="relative shrink-0">
-                      <img
-                        src={repo.owner.avatar_url}
-                        alt={repo.owner.login}
-                        className="size-10 rounded-lg object-cover border border-white/10"
-                      />
-                      <div className="absolute -bottom-1 -right-1 bg-background rounded-full p-0.5 border border-white/10">
-                        {repo.private ? (
-                          <Lock className="size-3 text-amber-500" />
-                        ) : (
-                          <Globe className="size-3 text-emerald-500" />
-                        )}
+            filteredRepos.map((repo: Repository) => {
+              const isConnected = connectedRepos?.some(
+                (cr) => cr.githubId === BigInt(repo.id),
+              );
+
+              return (
+                <div
+                  key={repo.id}
+                  onClick={() =>
+                    setSelectedRepo({
+                      owner: repo.owner.login,
+                      repo: repo.name,
+                    })
+                  }
+                  className={cn(
+                    "w-full flex flex-col space-y-4 p-4 rounded-xl border transition-all group cursor-pointer bg-accent/10 text-primary border-primary/10 hover:border-primary/10 hover:bg-accent/30",
+                  )}
+                >
+                  <div className="flex w-full justify-between items-start gap-4">
+                    <div className="flex items-start gap-3 min-w-0">
+                      <div className="relative shrink-0">
+                        <img
+                          src={repo.owner.avatar_url}
+                          alt={repo.owner.login}
+                          className="size-10 rounded-lg object-cover border border-white/10"
+                        />
+                        <div className="absolute -bottom-1 -right-1 bg-background rounded-full p-0.5 border border-white/10">
+                          {repo.private ? (
+                            <Lock className="size-3 text-amber-500" />
+                          ) : (
+                            <Globe className="size-3 text-emerald-500" />
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="min-w-0 flex flex-col gap-1.5">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="font-semibold text-sm truncate tracking-tight">
+                            {repo.name}
+                          </p>
+                          <span className="text-[10px] text-muted-foreground/60">
+                            {repo.owner.login}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-3 text-[10px] text-muted-foreground/60">
+                          <span className="flex items-center gap-1">
+                            <Star className="size-3" /> {repo.stargazers_count}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <GitFork className="size-3" /> {repo.forks_count}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Eye className="size-3" /> {repo.watchers_count}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="min-w-0 flex flex-col gap-1.5">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <p className="font-semibold text-sm truncate tracking-tight">
-                          {repo.name}
-                        </p>
-                        <span className="text-[10px] text-muted-foreground/60">
-                          {repo.owner.login}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-3 text-[10px] text-muted-foreground/60">
-                        <span className="flex items-center gap-1">
-                          <Star className="size-3" /> {repo.stargazers_count}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <GitFork className="size-3" /> {repo.forks_count}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Eye className="size-3" /> {repo.watchers_count}
-                        </span>
-                      </div>
+                    <div className="flex flex-col items-end gap-2 text-right">
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          "h-fit py-0 px-2.5 text-[10px] font-medium text-muted-foreground",
+                        )}
+                      >
+                        {repo.private ? "Private" : "Public"}
+                      </Badge>
+                      <p className="text-[9px] text-muted-foreground/70 italic whitespace-nowrap">
+                        Active {new Date(repo.pushed_at).toLocaleDateString()}
+                      </p>
                     </div>
                   </div>
 
-                  <div className="flex flex-col items-end gap-2 text-right">
-                    <Badge
-                      variant="outline"
+                  <div className="flex items-center justify-between pt-2 border-t border-white/5">
+                    <div className="flex items-center gap-2">
+                      {repo.language && (
+                        <div className="flex items-center gap-1.5">
+                          <div className="size-2 rounded-full bg-primary" />
+                          <span className="text-[10px] text-muted-foreground">
+                            {repo.language}
+                          </span>
+                        </div>
+                      )}
+                      {repo.owner.type === "Organization" && (
+                        <span className="text-[9px] bg-white/5 px-1.5 py-0.5 rounded text-muted-foreground border border-white/5">
+                          Org
+                        </span>
+                      )}
+                    </div>
+                    <Button
+                      disabled={isConnecting === repo.id || isConnected}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openConnectDialog(repo);
+                      }}
+                      size="sm"
                       className={cn(
-                        "h-fit py-0 px-2.5 text-[10px] font-medium text-muted-foreground",
+                        "h-7 py-0 px-6! text-[10px] flex items-center gap-1.5 rounded-md transition-all",
+                        isConnected
+                          ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/40 hover:bg-emerald-500/10 cursor-default"
+                          : "bg-primary/5 hover:bg-primary/10 text-white border border-primary/40",
                       )}
                     >
-                      {repo.private ? "Private" : "Public"}
-                    </Badge>
-                    <p className="text-[9px] text-muted-foreground/70 italic whitespace-nowrap">
-                      Active {new Date(repo.pushed_at).toLocaleDateString()}
-                    </p>
+                      {isConnected ? (
+                        <>
+                          Connected <Lock className="w-3 h-3" />
+                        </>
+                      ) : (
+                        <>
+                          Connect <LucidePlus className="w-3 h-3" />
+                        </>
+                      )}
+                    </Button>
                   </div>
                 </div>
-
-                <div className="flex items-center justify-between pt-2 border-t border-white/5">
-                  <div className="flex items-center gap-2">
-                    {repo.language && (
-                      <div className="flex items-center gap-1.5">
-                        <div className="size-2 rounded-full bg-primary" />
-                        <span className="text-[10px] text-muted-foreground">
-                          {repo.language}
-                        </span>
-                      </div>
-                    )}
-                    {repo.owner.type === "Organization" && (
-                      <span className="text-[9px] bg-white/5 px-1.5 py-0.5 rounded text-muted-foreground border border-white/5">
-                        Org
-                      </span>
-                    )}
-                  </div>
-                  <Button
-                    disabled={isConnecting === repo.id}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openConnectDialog(repo);
-                    }}
-                    size="sm"
-                    className="h-7 py-0 px-6! text-[10px] bg-primary/5 hover:bg-primary/10 text-white border border-primary/40 flex items-center gap-1.5 rounded-md"
-                  >
-                    Connect <LucidePlus className="w-3 h-3" />
-                  </Button>
-                </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>
