@@ -13,6 +13,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import ShowRepo from "@/modules/repo/ShowRepo";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import Link from "next/link";
 
 const RepositoriesPage = () => {
   const [selectedRepo, setSelectedRepo] = useState<{
@@ -47,9 +55,88 @@ const RepositoriesPage = () => {
             />
           </div>
 
-          <Button size='sm' className="text-xs cursor-pointer">
-            View Connected Repo <GitBranch className="h-4 w-4 ml-2" />
-          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button size="sm" className="text-xs cursor-pointer gap-2">
+                View Connected Repo <GitBranch className="h-4 w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[350px] p-0" align="end">
+              <div className="p-4 border-b bg-muted/50">
+                <h3 className="text-sm font-semibold flex items-center gap-2">
+                  <GitBranch className="size-4 text-primary" /> Active Links
+                </h3>
+                <p className="text-[10px] text-muted-foreground mt-1">
+                  Repositories currently linked to your projects.
+                </p>
+              </div>
+              <ScrollArea className="h-64">
+                {connectedRepos === undefined ? (
+                  <div className="p-4 text-center text-xs text-muted-foreground">
+                    Loading...
+                  </div>
+                ) : connectedRepos.filter((r) => r.projectName).length === 0 ? (
+                  <div className="p-8 text-center space-y-2">
+                    <FolderGit2 className="size-8 text-muted-foreground/20 mx-auto" />
+                    <p className="text-xs text-muted-foreground font-medium">
+                      No linked repositories
+                    </p>
+                    <p className="text-[10px] text-muted-foreground/60 px-4">
+                      No repo is currently linked to any project. Start by
+                      connecting one below.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="p-2 space-y-1">
+                    {connectedRepos
+                      .filter((r) => r.projectName)
+                      .map((repo) => (
+                        <div
+                          key={repo._id}
+                          className="p-2.5 rounded-lg border border-transparent hover:border-white/10 hover:bg-white/5 transition-all group"
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="min-w-0">
+                              <p className="text-[11px] font-bold truncate">
+                                {repo.repoFullName}
+                              </p>
+                              <div className="flex items-center gap-1.5 mt-1">
+                                <Badge
+                                  variant="secondary"
+                                  className="text-[9px] px-1.5 py-0 h-4 bg-primary/10 text-primary border-primary/20"
+                                >
+                                  {repo.projectName}
+                                </Badge>
+                                <span className="text-[9px] text-muted-foreground font-medium">
+                                  Linked
+                                </span>
+                              </div>
+                            </div>
+                            <Link
+                              href={`/dashboard/my-projects/${repo.projectId}`}
+                              className="opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="size-6 shrink-0"
+                              >
+                                <LayoutGrid className="size-3" />
+                              </Button>
+                            </Link>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </ScrollArea>
+              <div className="p-3 bg-muted/30 border-t">
+                <p className="text-[9px] text-center text-muted-foreground">
+                  Total {connectedRepos?.filter((r) => r.projectName).length || 0} active connections
+                </p>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
 
         <ShowRepo

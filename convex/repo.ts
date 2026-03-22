@@ -14,9 +14,23 @@ export const getConnectedRepos = query({
 
     if (!user) return [];
 
-    return await ctx.db
+    const repos = await ctx.db
       .query("repositories")
       .withIndex("by_user", (q) => q.eq("userId", user._id))
       .collect();
+
+    const projects = await ctx.db
+      .query("projects")
+      .withIndex("by_owner", (q) => q.eq("ownerId", user._id))
+      .collect();
+
+    return repos.map((repo) => {
+      const project = projects.find((p) => p.repositoryId === repo._id);
+      return {
+        ...repo,
+        projectName: project?.projectName,
+        projectId: project?._id,
+      };
+    });
   },
 });
