@@ -54,7 +54,6 @@ const RepositoriesPage = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-
           <Popover>
             <PopoverTrigger asChild>
               <Button size="sm" className="text-xs cursor-pointer gap-2">
@@ -141,7 +140,6 @@ const RepositoriesPage = () => {
             </PopoverContent>
           </Popover>
         </div>
-
         <ShowRepo
           searchQuery={searchQuery}
           selectedRepo={selectedRepo}

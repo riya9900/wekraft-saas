@@ -105,14 +105,6 @@ const ShowRepo = ({
 
       // Fire & Forget
       // ConnectRepo({
-      //   projectId: selectedProjectId as Id<"projects">,
-      //   owner: repoToConnect.owner.login,
-      //   repo: repoToConnect.name,
-      //   githubId: BigInt(repoToConnect.id),
-      //   name: repoToConnect.name,
-      //   fullName: repoToConnect.full_name,
-      //   url: repoToConnect.html_url,
-      //   repoType: repoToConnect.owner.type,
       // });
     } catch (error) {
       toast.dismiss("toast-connect-repo");
@@ -201,7 +193,7 @@ const ShowRepo = ({
                     })
                   }
                   className={cn(
-                    "w-full flex flex-col space-y-4 p-4 rounded-xl border transition-all group cursor-pointer bg-accent/10 text-primary border-primary/10 hover:border-primary/10 hover:bg-accent/30",
+                    "w-full flex flex-col space-y-4 p-3 rounded-lg border transition-all group cursor-pointer bg-muted/70 text-primary border-primary/10 hover:border-primary/10 hover:bg-accent/30",
                   )}
                 >
                   <div className="flex w-full justify-between items-start gap-4">
@@ -226,12 +218,12 @@ const ShowRepo = ({
                           <p className="font-semibold text-sm truncate tracking-tight">
                             {repo.name}
                           </p>
-                          <span className="text-[10px] text-muted-foreground/60">
+                          <span className="text-[10px] text-muted-foreground">
                             {repo.owner.login}
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-3 text-[10px] text-muted-foreground/60">
+                        <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <Star className="size-3" /> {repo.stargazers_count}
                           </span>
@@ -260,7 +252,7 @@ const ShowRepo = ({
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-2 border-t border-white/5">
+                  <div className="flex items-center justify-between pt-2 border-t border-primary/10">
                     <div className="flex items-center gap-2">
                       {repo.language && (
                         <div className="flex items-center gap-1.5">
@@ -286,7 +278,7 @@ const ShowRepo = ({
                       className={cn(
                         "h-7 py-0 px-6! text-[10px] flex items-center gap-1.5 rounded-md transition-all",
                         isConnected
-                          ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/40 hover:bg-emerald-500/10 cursor-default"
+                          ? ""
                           : "bg-primary/5 hover:bg-primary/10 text-white border border-primary/40",
                       )}
                     >
