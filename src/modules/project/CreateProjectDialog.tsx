@@ -136,7 +136,7 @@ const CreateProjectDialog = ({
         repoUrl: selectedRepo.html_url,
       });
 
-      toast.success(`Link prepared: ${selectedRepo.full_name} → ${projectName}`, {
+      toast.success(`Linked: ${selectedRepo.full_name} → ${projectName}`, {
         id: "toast-connect-repo",
       });
       
@@ -184,7 +184,7 @@ const CreateProjectDialog = ({
               </DialogHeader>
               <div className="flex gap-3 w-full pt-4">
                  <Button variant="outline" className="flex-1" onClick={() => setOpen(false)}>Later</Button>
-                 <Button className="flex-1 bg-primary text-white hover:bg-primary/90">Upgrade Now</Button>
+                 <Button className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90">Upgrade Now</Button>
               </div>
            </div>
         </DialogContent>
@@ -198,7 +198,7 @@ const CreateProjectDialog = ({
       if (!val) resetForm();
     }}>
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
-      <DialogContent className="w-full max-w-xl p-0 overflow-hidden border-white/10 bg-[#0A0A0B]">
+      <DialogContent className="w-full max-w-xl p-0 overflow-hidden border-accent/20 bg-[#0A0A0B]">
         
         <div className="p-6">
           <DialogHeader className="mb-6">
@@ -224,7 +224,7 @@ const CreateProjectDialog = ({
                 <Input
                   id="name"
                   placeholder="e.g. My Awesome Startup"
-                  className="bg-accent/30 border-white/5 focus:border-primary/50 transition-all font-inter"
+                  className="bg-accent/30 border-accent/10 focus:border-primary/50 transition-all font-inter"
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
                 />
@@ -235,7 +235,7 @@ const CreateProjectDialog = ({
                 <Textarea
                   id="desc"
                   placeholder="Tell us what you're building..."
-                  className="bg-accent/30 border-white/5 focus:border-primary/50 transition-all min-h-[100px] resize-none font-inter"
+                  className="bg-accent/30 border-accent/10 focus:border-primary/50 transition-all min-h-[100px] resize-none font-inter"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
@@ -245,10 +245,10 @@ const CreateProjectDialog = ({
                 <div className="space-y-2">
                   <Label className="text-sm font-semibold">Project Status</Label>
                   <Select value={status} onValueChange={setStatus}>
-                    <SelectTrigger className="bg-accent/30 border-white/5">
+                    <SelectTrigger className="bg-accent/30 border-accent/10">
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#121214] border-white/5">
+                    <SelectContent className="bg-[#121214] border-accent/10">
                       <SelectItem value="ideation">Ideation</SelectItem>
                       <SelectItem value="validation">Validation</SelectItem>
                       <SelectItem value="development">Development</SelectItem>
@@ -263,7 +263,7 @@ const CreateProjectDialog = ({
                   <RadioGroup 
                     value={isPublic ? "public" : "private"} 
                     onValueChange={(val) => setIsPublic(val === "public")}
-                    className="flex h-10 items-center gap-4 bg-accent/30 rounded-md px-3 border border-white/5"
+                    className="flex h-10 items-center gap-4 bg-accent/30 rounded-md px-3 border border-accent/10"
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="public" id="public" className="size-4 border-primary" />
@@ -292,7 +292,7 @@ const CreateProjectDialog = ({
                         ))}
                       </div>
                     ) : repositories?.length === 0 ? (
-                       <div className="flex flex-col items-center justify-center p-8 text-center bg-accent/10 rounded-xl border border-dashed border-white/10">
+                       <div className="flex flex-col items-center justify-center p-8 text-center bg-accent/10 rounded-xl border border-dashed border-accent/20">
                           <Github className="size-8 text-muted-foreground/30 mb-2" />
                           <p className="text-xs text-muted-foreground">No repositories found.</p>
                        </div>
@@ -306,12 +306,12 @@ const CreateProjectDialog = ({
                                "p-2.5 rounded-lg border transition-all cursor-pointer group flex items-center justify-between",
                                selectedRepo?.id === repo.id 
                                 ? "bg-primary/10 border-primary/40" 
-                                : "bg-accent/20 border-white/5 hover:border-primary/20 hover:bg-accent/30",
+                                : "bg-accent/20 border-accent/10 hover:border-primary/20 hover:bg-accent/30",
                                 isLoading && "opacity-50 cursor-not-allowed"
                              )}
                            >
                               <div className="flex items-center gap-3 min-w-0">
-                                <img src={repo.owner.avatar_url} className="size-8 rounded border border-white/10" alt="" />
+                                <img src={repo.owner.avatar_url} className="size-8 rounded border border-accent/10" alt="" />
                                 <div className="min-w-0">
                                    <p className="text-sm font-semibold truncate">{repo.name}</p>
                                    <p className="text-[9px] text-muted-foreground uppercase">{repo.owner.login}</p>
@@ -369,7 +369,7 @@ const CreateProjectDialog = ({
           )}
         </div>
 
-        <DialogFooter className="p-6 bg-muted/10 border-t border-white/5 gap-3 sm:gap-0 mt-0">
+        <DialogFooter className="p-6 bg-muted/10 border-t border-accent/10 gap-3 sm:gap-0 mt-0">
           <div className="flex w-full justify-between items-center">
             {step === 1 ? (
               <Button 

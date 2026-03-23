@@ -136,14 +136,14 @@ const ShowRepo = ({
         {[...Array(5)].map((_, i) => (
           <div
             key={i}
-            className="w-full p-2.5 rounded-lg border border-white/5 bg-white/[0.02]"
+            className="w-full p-2.5 rounded-lg border border-accent/10 bg-accent/5"
           >
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center gap-3">
-                <Skeleton className="size-8 rounded-md bg-white/5" />
-                <Skeleton className="h-4 w-32 rounded bg-white/5" />
+                <Skeleton className="size-8 rounded-md bg-accent/10" />
+                <Skeleton className="h-4 w-32 rounded bg-accent/10" />
               </div>
-              <Skeleton className="h-5 w-12 rounded-full bg-white/5" />
+              <Skeleton className="h-5 w-12 rounded-full bg-accent/10" />
             </div>
           </div>
         ))}
@@ -202,9 +202,9 @@ const ShowRepo = ({
                         <img
                           src={repo.owner.avatar_url}
                           alt={repo.owner.login}
-                          className="size-10 rounded-lg object-cover border border-white/10"
+                          className="size-10 rounded-lg object-cover border border-accent/20"
                         />
-                        <div className="absolute -bottom-1 -right-1 bg-background rounded-full p-0.5 border border-white/10">
+                        <div className="absolute -bottom-1 -right-1 bg-background rounded-full p-0.5 border border-accent/20">
                           {repo.private ? (
                             <Lock className="size-3 text-amber-500" />
                           ) : (
@@ -263,7 +263,7 @@ const ShowRepo = ({
                         </div>
                       )}
                       {repo.owner.type === "Organization" && (
-                        <span className="text-[9px] bg-white/5 px-1.5 py-0.5 rounded text-muted-foreground border border-white/5">
+                        <span className="text-[9px] bg-accent/10 px-1.5 py-0.5 rounded text-muted-foreground border border-accent/20 font-medium">
                           Org
                         </span>
                       )}
@@ -279,7 +279,7 @@ const ShowRepo = ({
                         "h-7 py-0 px-6! text-[10px] flex items-center gap-1.5 rounded-md transition-all",
                         isConnected
                           ? ""
-                          : "bg-primary/5 hover:bg-primary/10 text-white border border-primary/40",
+                          : "bg-primary text-primary-foreground hover:bg-primary/90 border border-primary/40 shadow-sm",
                       )}
                     >
                       {isConnected ? (
@@ -309,14 +309,14 @@ const ShowRepo = ({
                 <PaginationPrevious
                   onClick={() => handlePageChange(currentPage - 1)}
                   className={cn(
-                    "bg-white/5 border-white/5 hover:bg-white/10 cursor-pointer transition-all",
+                    "bg-accent/5 border-accent/20 hover:bg-accent/10 cursor-pointer transition-all",
                     currentPage === 1 && "pointer-events-none opacity-30",
                   )}
                 />
               </PaginationItem>
 
               <PaginationItem>
-                <div className="px-3 py-1.5 rounded-md bg-white/5 border border-white/5 text-xs font-medium min-w-[32px] text-center">
+                <div className="px-3 py-1.5 rounded-md bg-accent/5 border border-accent/20 text-xs font-medium min-w-[32px] text-center">
                   {currentPage}
                 </div>
               </PaginationItem>
@@ -325,7 +325,7 @@ const ShowRepo = ({
                 <PaginationNext
                   onClick={() => handlePageChange(currentPage + 1)}
                   className={cn(
-                    "bg-white/5 border-white/5 hover:bg-white/10 cursor-pointer transition-all",
+                    "bg-accent/5 border-accent/20 hover:bg-accent/10 cursor-pointer transition-all",
                     filteredRepos.length < ITEMS_PER_PAGE &&
                       "pointer-events-none opacity-30",
                   )}

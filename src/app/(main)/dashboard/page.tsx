@@ -331,7 +331,6 @@ export default function DashboardPage() {
                   />
                 </div>
               </div>
-
               <ProjectCards projects={userProjects} />
             </div>
           )}
