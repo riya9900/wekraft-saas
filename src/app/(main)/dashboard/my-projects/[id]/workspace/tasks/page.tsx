@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Id } from "../../../../../../../../convex/_generated/dataModel";
 import { api } from "../../../../../../../../convex/_generated/api";
 import { useQuery } from "convex/react";
-import { Layers2, LucideLayers2, UserPlus, List, Kanban, CircleDot, Timer, Search, Filter, Plus } from "lucide-react";
+import { Layers2, UserPlus, Search, Filter, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
