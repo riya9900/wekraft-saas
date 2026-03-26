@@ -297,7 +297,7 @@ export const getProjectUsage = query({
 });
 
 // ====================================
-// GET USER PROJECTS with members
+// GET USER PROJECTS with members (LIMITED )
 // ====================================
 export const getUserProjects = query({
   args: {},
