@@ -88,7 +88,8 @@ export const AppSidebar = () => {
     api.user.getCurrentUser,
   );
 
-  //   const projects = useQuery(api.project.getProjects);
+  const ownerProjects = useQuery(api.project.getUserProjects);
+  // const teamProjects = future todo
 
   useEffect(() => {
     setMounted(true);
@@ -231,14 +232,66 @@ export const AppSidebar = () => {
                 {/* MY CREATIONS */}
                 <TabsContent value="my" className="m-0 p-2">
                   <div className="flex flex-col gap-2 ">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="text-xs mt-2"
-                    >
-                      <Plus className="h-4 w-4 mr-1" />
-                      Create Project
-                    </Button>
+                    {ownerProjects === undefined ? (
+                      <div className="flex flex-col gap-2">
+                        <Skeleton className="h-9 w-full rounded-md" />
+                        <Skeleton className="h-9 w-full rounded-md" />
+                        <Skeleton className="h-9 w-full rounded-md" />
+                      </div>
+                    ) : (
+                      <>
+                        <div className="flex flex-col gap-1">
+                          {ownerProjects.map((project) => (
+                            <Link
+                              key={project._id}
+                              href={`/dashboard/my-projects/${project.slug}`}
+                              className="flex items-center justify-between gap-2 p-1 rounded-md hover:bg-accent/40 cursor-pointer transition-all border border-transparent hover:border-sidebar-border"
+                            >
+                              <div className="flex items-center gap-2 max-w-[130px]">
+                                <Folder className="h-3 w-3 text-primary shrink-0" />
+                                <span className="text-xs font-medium truncate">
+                                  {project.projectName}
+                                </span>
+                              </div>
+
+                              <div className="flex -space-x-1.5 overflow-hidden">
+                                {project.members &&
+                                project.members.length > 0 ? (
+                                  project.members
+                                    .slice(0, 3)
+                                    .map((member, idx) => (
+                                      <Avatar
+                                        key={idx}
+                                        className="h-5 w-5 border-2 border-background ring-1 ring-slate-100 dark:ring-slate-800"
+                                      >
+                                        <AvatarImage src={member.userImage} />
+                                        <AvatarFallback className="text-[8px]">
+                                          {member.userName
+                                            .substring(0, 1)
+                                            .toUpperCase()}
+                                        </AvatarFallback>
+                                      </Avatar>
+                                    ))
+                                ) : (
+                                  <></>
+                                )}
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          asChild
+                          className="text-xs mt-2 h-8 w-full cursor-pointer"
+                        >
+                          <Link href="/dashboard/my-projects">
+                            <Plus className="h-4 w-4 mr-1" />
+                            Create Project
+                          </Link>
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </TabsContent>
 
@@ -322,10 +375,10 @@ export const AppSidebar = () => {
               <PopoverTrigger asChild>
                 <button
                   type="button"
-                  className="relative z-10 flex w-full items-center gap-3 px-3 py-2 text-muted-foreground data-[active=true]:text-white"
+                  className="relative z-10 flex w-full items-center gap-3 px-3 py-2 text-primary"
                 >
                   <Palette className="h-5 w-5" />
-                  <span className="text-base">Theme</span>
+                  <span className="text-sm">Theme</span>
 
                   {/* Active gradient */}
                   <span
