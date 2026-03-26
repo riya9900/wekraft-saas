@@ -378,7 +378,7 @@ export const AppSidebar = () => {
                   className="relative z-10 flex w-full items-center gap-3 px-3 py-2 text-primary"
                 >
                   <Palette className="h-5 w-5" />
-                  <span className="text-base">Theme</span>
+                  <span className="text-sm">Theme</span>
 
                   {/* Active gradient */}
                   <span
