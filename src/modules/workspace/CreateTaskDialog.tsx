@@ -165,7 +165,7 @@ export const CreateTaskDialog = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="w-full max-w-[800px] h-full max-h-[600px] dark:bg-[#1c1c1c] border-[#2b2b2b] p-0 overflow-hidden dark:text-neutral-200">
+      <DialogContent className="w-full max-w-[800px] h-full max-h-[560px] dark:bg-[#1c1c1c] border-[#2b2b2b] p-0 overflow-hidden dark:text-neutral-200">
         <DialogHeader className="p-4 flex flex-row items-center gap-2 border-b border-[#2b2b2b]">
           <div className="flex items-center gap-1.5 text-xs text-neutral-400 font-medium">
             <div className="w-3 h-3 rounded-full bg-blue-600 flex items-center justify-center text-[10px] text-white"></div>
@@ -378,7 +378,7 @@ export const CreateTaskDialog = ({
             placeholder="Add a description, a project brief, or collect ideas..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="min-h-[250px] bg-transparent border p-2 focus-visible:ring-0 placeholder:text-neutral-600 resize-none text-sm leading-relaxed"
+            className="h-[220px] overflow-y-scroll bg-transparent border p-2 focus-visible:ring-0 placeholder:text-neutral-600 resize-none text-sm leading-relaxed"
           />
         </div>
 
