@@ -130,7 +130,7 @@ export const PROJECT_STATUS = [
 export const TABS = [
   { id: "List", label: "List", icon: List },
   { id: "Table", label: "Table", icon: Table },
-  { id: "Kanban", label: "Kanban", icon: Kanban },
+  // { id: "Kanban", label: "Kanban", icon: Kanban },
   { id: "Issues", label: "Issues", icon: Bug },
   { id: "Sprint", label: "Sprint", icon: Hourglass },
 ];
