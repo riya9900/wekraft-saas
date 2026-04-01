@@ -7,12 +7,15 @@ import {
   ChevronLeft,
   ChevronRight,
   Filter,
+  LucideCalendar,
   MessageSquare,
+  Milestone,
   MoreHorizontal,
   Plus,
   Search,
   Star,
   Target,
+  TicketCheck,
   UserPlus,
 } from "lucide-react";
 import { format, addMonths, subMonths, addWeeks, subWeeks, addDays, subDays, isSameDay, isSameMonth, startOfWeek } from "date-fns";
@@ -23,8 +26,8 @@ import { Calendar } from "@/components/ui/calendar";
 
 const tabs = [
   { name: "All Scheduled", icon: <CalendarDays className="w-4 h-4 mr-2" /> },
-  { name: "Events", icon: <Star className="w-4 h-4 mr-2" /> },
-  { name: "Milestones", icon: <Target className="w-4 h-4 mr-2" /> },
+  { name: "Events", icon: <TicketCheck className="w-4 h-4 mr-2" /> },
+  { name: "Milestones", icon: <Milestone className="w-4 h-4 mr-2" /> },
   { name: "Comments", icon: <MessageSquare className="w-4 h-4 mr-2" /> },
 ];
 
@@ -65,9 +68,9 @@ export default function CalendarHeader({
         }
       `}} />
       {/* Top Banner section */}
-      <div className="flex items-center justify-between px-6 py-5">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Project Calendar</h1>
+          <h1 className="text-2xl font-semibold"><LucideCalendar className="w-6 h-6 mr-2 inline"/>Project Calendar</h1>
           <p className="text-sm text-muted-foreground mt-1.5 font-medium">
             Stay Organized and On Track with Your Personalized Calendar
           </p>
@@ -111,10 +114,7 @@ export default function CalendarHeader({
         </div>
       </div>
 
-      {/* Date Navigation Row */}
-      {/* 
-         Logic to hide Today button when already on current week/month 
-      */}
+  
       {(() => {
         const isTodayInRange = (currentView === "dayGridMonth" && isSameMonth(currentDate, new Date())) || 
                               (currentView === "timeGridWeek" && isSameDay(startOfWeek(currentDate, { weekStartsOn: 1 }), startOfWeek(new Date(), { weekStartsOn: 1 })));

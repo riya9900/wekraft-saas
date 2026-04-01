@@ -21,7 +21,7 @@ export default function CalendarContainer() {
   // Wait until we have the project to query events
   const events = useQuery(
     api.calendar.getEvents,
-    project?._id ? { projectId: project._id } : "skip" // skip if no project yet
+    project?._id ? { projectId: project._id } : "skip" 
   );
 
   const [activeTab, setActiveTab] = useState("All Scheduled");
@@ -153,7 +153,7 @@ export default function CalendarContainer() {
   });
 
   return (
-    <div className="flex flex-col h-full bg-background rounded-lg border">
+    <div className="flex flex-col h-full  ">
       <CalendarHeader
         activeTab={activeTab}
         setActiveTab={setActiveTab}
