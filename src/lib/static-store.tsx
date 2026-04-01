@@ -1,5 +1,24 @@
 import React from "react";
-import { Bug, BugPlay, CircleCheckBig, Ellipsis, Hourglass, Kanban, List, Loader, Minus, MoreHorizontal, ScanSearch, Table } from "lucide-react";
+import {
+  Bug,
+  BugPlay,
+  CircleCheckBig,
+  Ellipsis,
+  Hourglass,
+  Kanban,
+  List,
+  Loader,
+  Minus,
+  MoreHorizontal,
+  ScanSearch,
+  Table,
+} from "lucide-react";
+import { 
+  Popover, 
+  PopoverContent, 
+  PopoverTrigger 
+} from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 
 export const AVAILABLE_TAGS = [
   "Productivity",
@@ -108,62 +127,61 @@ export const PROJECT_STATUS = [
   "scaling",
 ];
 
-export const  TABS = [
+export const TABS = [
   { id: "List", label: "List", icon: List },
-    { id: "Table", label: "Table", icon: Table },
+  { id: "Table", label: "Table", icon: Table },
   { id: "Kanban", label: "Kanban", icon: Kanban },
   { id: "Issues", label: "Issues", icon: Bug },
   { id: "Sprint", label: "Sprint", icon: Hourglass },
 ];
 
 export const statusIcons: Record<string, React.ReactNode> = {
-    "not started": <Ellipsis className="w-3.5 h-3.5" />,
-    inprogress: <Loader className="w-3.5 h-3.5 text-yellow-500" />,
-    issue: <Bug className="w-3.5 h-3.5 text-red-500" />,
-    reviewing: <ScanSearch className="w-3.5 h-3.5 text-blue-500" />,
-    testing: <BugPlay className="w-3.5 h-3.5 text-indigo-500" />,
-    completed: <CircleCheckBig className="w-3.5 h-3.5 text-green-500" />,
-  };
+  "not started": <Ellipsis className="w-3.5 h-3.5" />,
+  inprogress: <Loader className="w-3.5 h-3.5 text-yellow-500" />,
+  issue: <Bug className="w-3.5 h-3.5 text-red-500" />,
+  reviewing: <ScanSearch className="w-3.5 h-3.5 text-blue-500" />,
+  testing: <BugPlay className="w-3.5 h-3.5 text-indigo-500" />,
+  completed: <CircleCheckBig className="w-3.5 h-3.5 text-green-500" />,
+};
 
-  export const statusColors: Record<string, string> = {
-    "not started": "bg-slate-500/10 text-slate-500 border-slate-500/20",
-    inprogress: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
-    reviewing: "bg-blue-500/10 text-blue-500 border-blue-500/20",
-    testing: "bg-indigo-500/10 text-indigo-500 border-indigo-500/20",
-    completed: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
-    issue: "bg-red-500/10 text-red-500 border-red-500/20",
-  };
+export const statusColors: Record<string, string> = {
+  "not started": "bg-slate-500/10 text-slate-500 border-slate-500/20",
+  inprogress: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+  reviewing: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+  testing: "bg-indigo-500/10 text-indigo-500 border-indigo-500/20",
+  completed: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+  issue: "bg-red-500/10 text-red-500 border-red-500/20",
+};
 
+export const priorityIcons: Record<string, React.ReactNode> = {
+  none: <MoreHorizontal className="w-3.5 h-3.5" />,
+  low: (
+    <div className="flex items-end gap-px h-3 mb-0.5">
+      <div className="w-[1.5px] h-3 bg-yellow-500 rounded-[1px]" />
+      <div className="w-[1.5px] h-2 dark:bg-neutral-400 bg-accent rounded-[1px]" />
+      <div className="w-[1.5px] h-1.5 dark:bg-neutral-400 bg-accent rounded-[1px]" />
+      <div className="w-[1.5px] h-[4px] dark:bg-neutral-400 bg-accent rounded-[1px]" />
+    </div>
+  ),
+  medium: (
+    <div className="flex items-end gap-px h-3 mb-0.5">
+      <div className="w-[1.5px] h-3 bg-green-500 rounded-[1px]" />
+      <div className="w-[1.5px] h-2 bg-green-500 rounded-[1px]" />
+      <div className="w-[1.5px] h-1.5  dark:bg-neutral-400 bg-accent  rounded-[1px]" />
+      <div className="w-[1.5px] h-[4px] dark:bg-neutral-400 bg-accent rounded-[1px]" />
+    </div>
+  ),
+  high: (
+    <div className="flex items-end gap-px h-3 mb-0.5">
+      <div className="w-[1.5px] h-3 bg-red-500 rounded-[1px]" />
+      <div className="w-[1.5px] h-2.5 bg-red-500 rounded-[1px]" />
+      <div className="w-[1.5px] h-2 bg-red-500 rounded-[1px]" />
+      <div className="w-[1.5px] h-[4px] dark:bg-neutral-400 bg-accent rounded-[1px]" />
+    </div>
+  ),
+};
 
-   export const priorityIcons: Record<string, React.ReactNode> = {
-      none: <MoreHorizontal className="w-3.5 h-3.5" />,
-      low: (
-        <div className="flex items-end gap-px h-3 mb-0.5">
-          <div className="w-[1.5px] h-3 bg-yellow-500 rounded-[1px]" />
-          <div className="w-[1.5px] h-2 dark:bg-neutral-400 bg-accent rounded-[1px]" />
-          <div className="w-[1.5px] h-1.5 dark:bg-neutral-400 bg-accent rounded-[1px]" />
-          <div className="w-[1.5px] h-[4px] dark:bg-neutral-400 bg-accent rounded-[1px]" />
-        </div>
-      ),
-      medium: (
-        <div className="flex items-end gap-px h-3 mb-0.5">
-          <div className="w-[1.5px] h-3 bg-green-500 rounded-[1px]" />
-          <div className="w-[1.5px] h-2 bg-green-500 rounded-[1px]" />
-          <div className="w-[1.5px] h-1.5  dark:bg-neutral-400 bg-accent  rounded-[1px]" />
-          <div className="w-[1.5px] h-[4px] dark:bg-neutral-400 bg-accent rounded-[1px]" />
-        </div>
-      ),
-      high: (
-        <div className="flex items-end gap-px h-3 mb-0.5">
-          <div className="w-[1.5px] h-3 bg-red-500 rounded-[1px]" />
-          <div className="w-[1.5px] h-2.5 bg-red-500 rounded-[1px]" />
-          <div className="w-[1.5px] h-2 bg-red-500 rounded-[1px]" />
-          <div className="w-[1.5px] h-[4px] dark:bg-neutral-400 bg-accent rounded-[1px]" />
-        </div>
-      ),
-    };
-
-    export const priorityIcons2: Record<string, React.ReactNode> = {
+export const priorityIcons2: Record<string, React.ReactNode> = {
   none: <Minus className="w-3.5 h-3.5" />,
   low: (
     <div className="flex items-end gap-px h-3 mb-0.5">
@@ -191,4 +209,36 @@ export const statusIcons: Record<string, React.ReactNode> = {
   ),
 };
 
-export const INVITE_LINK="http://localhost:3000/";
+
+export const SortPopover = ({ 
+  title, 
+  icon: TitleIcon, 
+  children,
+  trigger
+}: { 
+  title: string; 
+  icon: React.ElementType; 
+  children: React.ReactNode;
+  trigger: React.ReactNode;
+}) => (
+  <Popover>
+    <PopoverTrigger asChild>
+      <div className="flex items-center cursor-pointer ml-auto shrink-0 transition-opacity hover:opacity-100 opacity-100">
+        {trigger}
+      </div>
+    </PopoverTrigger>
+    <PopoverContent className="w-56 p-2 rounded-lg shadow-md border-zinc-200 dark:border-zinc-800 bg-sidebar" align="end" sideOffset={8}>
+      <div className="flex items-center gap-2 px-3 py-2 mb-1">
+        <TitleIcon className="w-4 h-4 text-primary" />
+        <span className="text-[13px] tracking-tight font-medium text-primary/70">{title}</span>
+      </div>
+      <Separator className="mb-2 bg-zinc-100 dark:bg-zinc-800" />
+      <div className="space-y-0.5">
+        {children}
+      </div>
+    </PopoverContent>
+  </Popover>
+);
+
+
+export const INVITE_LINK = "http://localhost:3000/";

@@ -25,11 +25,7 @@ import {
   Tag,
   CircleDot,
 } from "lucide-react";
-import { 
-  Popover, 
-  PopoverContent, 
-  PopoverTrigger 
-} from "@/components/ui/popover";
+
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -55,6 +51,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Task } from "@/types/types";
+import { SortPopover } from "@/lib/static-store";
 
 
 const priorityIcons: Record<string, React.ReactNode> = {
@@ -113,35 +110,6 @@ const SortOption = ({ label, icon, onClick, isActive }: SortOptionProps) => (
   </button>
 );
 
-const SortPopover = ({ 
-  title, 
-  icon: TitleIcon, 
-  children,
-  trigger
-}: { 
-  title: string; 
-  icon: React.ElementType; 
-  children: React.ReactNode;
-  trigger: React.ReactNode;
-}) => (
-  <Popover>
-    <PopoverTrigger asChild>
-      <div className="flex items-center cursor-pointer ml-auto shrink-0 transition-opacity hover:opacity-100 opacity-100">
-        {trigger}
-      </div>
-    </PopoverTrigger>
-    <PopoverContent className="w-56 p-2 rounded-lg shadow-md border-zinc-200 dark:border-zinc-800 bg-sidebar" align="end" sideOffset={8}>
-      <div className="flex items-center gap-2 px-3 py-2 mb-1">
-        <TitleIcon className="w-4 h-4 text-primary" />
-        <span className="text-[13px] tracking-tight font-medium text-primary/70">{title}</span>
-      </div>
-      <Separator className="mb-2 bg-zinc-100 dark:bg-zinc-800" />
-      <div className="space-y-0.5">
-        {children}
-      </div>
-    </PopoverContent>
-  </Popover>
-);
 
 
 interface TaskGroupProps {
@@ -200,23 +168,23 @@ const TaskGroup = ({
                 <TableHead className="w-[50px] px-4">
                   <Checkbox className="rounded border-muted-foreground/30 data-[state=checked]:bg-primary" />
                 </TableHead>
-                <TableHead className="px-4 text-[11px] font-medium  capitalize tracking-widest min-w-[200px]  border-r border-b border-neutral-800">
+                <TableHead className="px-4 text-xs font-medium text-primary capitalize tracking-widest min-w-[200px]  border-r border-b border-neutral-800">
                   <div className="flex items-center gap-2">
-                    <FolderPen className="w-4 h-4" /> Task Name
+                    <FolderPen className="w-4.5 h-4.5" /> Task Name
                   </div>
                 </TableHead>
-                <TableHead className="px-4 text-[11px] font-medium capitalize tracking-widest min-w-[300px] border-r border-b border-neutral-800">
+                <TableHead className="px-4 text-xs font-medium capitalize tracking-widest min-w-[300px] border-r border-b border-neutral-800">
                   <div className="flex items-center gap-2">
-                    <TextQuote className="w-4 h-4" /> Description
+                    <TextQuote className="w-4.5 h-4.5" /> Description
                   </div>
                 </TableHead>
-                <TableHead className="px-4 text-[11px] font-medium  capitalize tracking-widest shrink-0 border-r border-b border-neutral-800">
+                <TableHead className="px-4 text-xs text-primary font-medium  capitalize tracking-widest shrink-0 border-r border-b border-neutral-800">
                   <div className="flex items-center justify-between gap-2 overflow-hidden">
                     <div className="flex items-center gap-2">
-                       <Hourglass className="w-4 h-4" /> Estimation
+                       <Hourglass className="w-4.5 h-4.5" /> Duration
                     </div>
                     <SortPopover
-                      title="Sort Estimation"
+                      title="Sort Duration"
                       icon={Calendar}
                       trigger={<ChevronsUpDown className="w-3.5 h-3.5 text-muted-foreground hover:text-primary transition-colors cursor-pointer shrink-0" />}
                     >
@@ -228,10 +196,10 @@ const TaskGroup = ({
                     </SortPopover>
                   </div>
                 </TableHead>
-                <TableHead className="px-4 text-[11px] font-medium  capitalize tracking-widest shrink-0 border-r border-b border-neutral-800 min-w-[120px]">
+                <TableHead className="px-4 text-xs text-primary font-medium  capitalize tracking-widest shrink-0 border-r border-b border-neutral-800 min-w-[120px]">
                   <div className="flex items-center justify-between gap-2 overflow-hidden">
                     <div className="flex items-center gap-2">
-                      <Box className="w-4 h-4" /> Tags
+                      <Box className="w-4.5 h-4.5" /> Tags
                     </div>
                     <SortPopover
                       title="Filter & Sort"
@@ -243,15 +211,15 @@ const TaskGroup = ({
                     </SortPopover>
                   </div>
                 </TableHead>
-                <TableHead className="px-4 text-[11px] font-medium  capitalize tracking-widest shrink-0 border-r border-b border-neutral-800">
+                <TableHead className="px-4 text-xs text-primary font-medium  capitalize tracking-widest shrink-0 border-r border-b border-neutral-800">
                   <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4" /> Assigned
+                    <Users className="w-4.5 h-4.5" /> Assigned
                   </div>
                 </TableHead>
-                <TableHead className="px-4 text-[11px] font-medium  capitalize tracking-widest shrink-0 border-b border-neutral-800">
+                <TableHead className="px-4 text-xs text-primary font-medium  capitalize tracking-widest shrink-0 border-b border-neutral-800">
                   <div className="flex items-center justify-between gap-2 overflow-hidden">
                     <div className="flex items-center gap-2">
-                      <ChartNoAxesColumnIncreasing className="w-4 h-4" /> Priority
+                      <ChartNoAxesColumnIncreasing className="w-4.5 h-4.5" /> Priority
                     </div>
                     <SortPopover
                       title="Sort Priority"
