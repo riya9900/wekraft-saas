@@ -185,7 +185,7 @@ export const TableTab = ({ tasks }: TableTabProps) => {
                   <Users className="w-4.5 h-4.5" /> Assigned
                 </div>
               </TableHead>
-              <TableHead className="text-xs text-primary font-medium px-4 text-center  border-neutral-700">
+              <TableHead className="text-xs text-primary font-medium px-4 text-center border-r border-neutral-700">
                 <div className="flex items-center justify-between gap-2 overflow-hidden">
                   <div className="flex items-center gap-2 justify-center">
                     <ChartNoAxesColumnIncreasing className="w-4.5 h-4.5" />{" "}
@@ -232,7 +232,7 @@ export const TableTab = ({ tasks }: TableTabProps) => {
                   <TableRow
                     key={task._id}
                     className={cn(
-                      "group border-b border-neutral-800/40 hover:bg-neutral-800/20 transition-all cursor-pointer",
+                      "group border-b border-neutral-800 hover:bg-neutral-800/20 transition-all cursor-pointer",
                       isSelected && "bg-primary/5",
                     )}
                     onClick={() => setSelectedTaskForSheet(task)}
@@ -247,10 +247,10 @@ export const TableTab = ({ tasks }: TableTabProps) => {
                         className="rounded border-neutral-800 data-[state=checked]:bg-primary"
                       />
                     </TableCell>
-                    <TableCell className="px-4 font-medium text-[13px] text-primary/70 group-hover:text-primary transition-colors">
+                    <TableCell className="px-4 font-medium border-r border-neutral-700 text-[13px] text-primary/70 group-hover:text-primary transition-colors">
                       {task.title}
                     </TableCell>
-                    <TableCell className="px-4">
+                    <TableCell className="px-4 border-r border-neutral-700">
                       <Badge
                         className={cn(
                           "px-2.5 py-0.5 rounded-full text-[10px] flex items-center gap-1.5 border font-semibold capitalize whitespace-nowrap",
@@ -261,7 +261,7 @@ export const TableTab = ({ tasks }: TableTabProps) => {
                         {task.status}
                       </Badge>
                     </TableCell>
-                    <TableCell className="px-4 text-[12px] font-medium text-primary/50">
+                    <TableCell className="px-4 text-[12px] font-medium text-primary/50 border-r border-neutral-700">
                       {task.estimation ? (
                         <span className="flex items-center gap-1.5 opacity-80">
                           {format(task.estimation.startDate, "MMM d")} —{" "}
@@ -271,7 +271,7 @@ export const TableTab = ({ tasks }: TableTabProps) => {
                         <span className="opacity-20 italic">No timeline</span>
                       )}
                     </TableCell>
-                    <TableCell className="px-4">
+                    <TableCell className="px-4 border-r border-neutral-700">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         {/* {task.type && task.type.length > 0 ? (
                           task.type.map((tag: string, i: number) => (
@@ -284,7 +284,7 @@ export const TableTab = ({ tasks }: TableTabProps) => {
                         )} */}
                       </div>
                     </TableCell>
-                    <TableCell className="px-4">
+                    <TableCell className="px-4 border-r border-neutral-700">
                       <div className="flex -space-x-1.5">
                         {task.assignedTo?.map((person, i) => (
                           <Avatar
@@ -302,7 +302,7 @@ export const TableTab = ({ tasks }: TableTabProps) => {
                         ))}
                       </div>
                     </TableCell>
-                    <TableCell className="px-4">
+                    <TableCell className="px-4 border-r border-neutral-700">
                       <PriorityBadge priority={task.priority} />
                     </TableCell>
                     <TableCell
@@ -314,7 +314,7 @@ export const TableTab = ({ tasks }: TableTabProps) => {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-7 w-7 text-primary/20 hover:text-primary transition-all rounded hover:bg-neutral-800"
+                            className="h-7 w-7 text-primary transition-all rounded hover:bg-neutral-800"
                           >
                             <MoreHorizontal size={14} />
                           </Button>
