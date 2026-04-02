@@ -178,8 +178,8 @@ const TaskGroup = ({
                     <TextQuote className="w-4.5 h-4.5" /> Description
                   </div>
                 </TableHead>
-                <TableHead className="px-4 text-xs text-primary font-medium  capitalize tracking-widest shrink-0 border-r border-b border-neutral-800">
-                  <div className="flex items-center justify-between gap-2 overflow-hidden">
+                <TableHead className="px-4 text-xs text-primary font-medium capitalize tracking-widest shrink-0 border-r border-b border-neutral-800">
+                  <div className="flex items-center justify-center gap-2 overflow-hidden">
                     <div className="flex items-center gap-2">
                        <Hourglass className="w-4.5 h-4.5" /> Duration
                     </div>
@@ -191,13 +191,13 @@ const TaskGroup = ({
                       <SortOption label="Upcoming First" icon={<ArrowUpNarrowWide className="w-3 h-3" />} />
                       <SortOption label="Latest First" icon={<ArrowDownWideNarrow className="w-3 h-3" />} />
                       <Separator className="my-1.5 opacity-50" />
-                      <SortOption label="Shortest Duration" icon={<Clock className="w-3 h-3" />} />
-                      <SortOption label="Longest Duration" icon={<Clock className="w-3 h-3" />} />
+                      <SortOption label="Shortest Duration" icon={<ArrowUpNarrowWide className="w-3 h-3" />} />
+                      <SortOption label="Longest Duration" icon={<ArrowDownWideNarrow className="w-3 h-3" />} />
                     </SortPopover>
                   </div>
                 </TableHead>
-                <TableHead className="px-4 text-xs text-primary font-medium  capitalize tracking-widest shrink-0 border-r border-b border-neutral-800 min-w-[120px]">
-                  <div className="flex items-center justify-between gap-2 overflow-hidden">
+                <TableHead className="px-4 text-xs text-primary font-medium capitalize tracking-widest shrink-0 border-r border-b border-neutral-800 min-w-[120px]">
+                  <div className="flex items-center justify-center gap-2 overflow-hidden">
                     <div className="flex items-center gap-2">
                       <Box className="w-4.5 h-4.5" /> Tags
                     </div>
@@ -271,11 +271,11 @@ const TaskGroup = ({
                       </p>
                     </TableCell>
                     <TableCell className="p-2.5 whitespace-nowrap text-xs text-muted-foreground border-r border-b border-neutral-800">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center justify-center gap-2">
                         <Clock className="w-3.5 h-3.5" />
                         {task.estimation ? (
                           <span>
-                            {format(task.estimation.startDate, "MMM d")} -{" "}
+                            {format(task.estimation.startDate, "MMM d")} —{" "}
                             {format(task.estimation.endDate, "MMM d")}
                           </span>
                         ) : (
@@ -283,8 +283,8 @@ const TaskGroup = ({
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="p-2.5 whitespace-nowrap border-r border-b border-neutral-800 text-center">
-                     <div className="flex items-center gap-1.5 flex-wrap">
+                    <TableCell className="p-2.5 whitespace-nowrap border-r border-b border-neutral-800">
+                     <div className="flex items-center justify-center gap-1.5 flex-wrap">
                         {task.type ? (
                             <div 
                               className={cn(

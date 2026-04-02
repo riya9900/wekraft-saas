@@ -141,7 +141,7 @@ export const TableTab = ({ tasks }: TableTabProps) => {
                 </div>
               </TableHead>
               <TableHead className="text-xs text-primary font-medium  px-4  border-r  border-neutral-700">
-                <div className="flex items-center justify-between gap-2 overflow-hidden">
+                <div className="flex items-center justify-center gap-2 overflow-hidden">
                   <div className="flex items-center gap-2">
                     <Hourglass className="w-4.5 h-4.5" /> Duration
                   </div>
@@ -163,17 +163,17 @@ export const TableTab = ({ tasks }: TableTabProps) => {
                     <Separator className="my-1.5 opacity-50" />
                     <SortOption
                       label="Shortest Duration"
-                      icon={<Clock className="w-3 h-3" />}
+                      icon={<ArrowUpNarrowWide className="w-3 h-3" />}
                     />
                     <SortOption
                       label="Longest Duration"
-                      icon={<Clock className="w-3 h-3" />}
+                      icon={<ArrowDownWideNarrow className="w-3 h-3" />}
                     />
                   </SortPopover>
                 </div>
               </TableHead>
               <TableHead className="text-xs text-primary font-medium  px-4  border-r  border-neutral-700">
-                <div className="flex items-center justify-between gap-2 overflow-hidden">
+                <div className="flex items-center justify-center gap-2 overflow-hidden">
                   <div className="flex items-center gap-2">
                     <Box className="w-4.5 h-4.5" /> Tags
                   </div>
@@ -247,32 +247,31 @@ export const TableTab = ({ tasks }: TableTabProps) => {
                         className="rounded border-neutral-800 data-[state=checked]:bg-primary"
                       />
                     </TableCell>
-                    <TableCell className="px-4 font-medium border-r border-neutral-700 text-[13px] text-primary/70 group-hover:text-primary transition-colors">
+                    <TableCell className="px-4 font-medium border-r border-b border-neutral-700 text-[13px] text-primary/70 group-hover:text-primary transition-colors">
                       {task.title}
                     </TableCell>
-                    <TableCell className="px-4 border-r border-neutral-700">
+                    <TableCell className="px-4 border-r border-b border-neutral-700">
                       <Badge
                         className={cn(
                           "px-2.5 py-0.5 rounded-full text-[12px] flex items-center gap-1.5 border font-medium capitalize whitespace-nowrap bg-primary/10 text-primary",
-                          // statusColors[task.status] || "bg-neutral-800",
                         )}
                       >
                         {statusIcons[task.status]}
                         {task.status}
                       </Badge>
                     </TableCell>
-                    <TableCell className="px-4 text-[12px] font-medium text-primary/70 border-r border-neutral-700">
+                    <TableCell className="px-4 text-[12px] font-medium text-primary/70 border-r border-b border-neutral-700">
                       {task.estimation ? (
-                        <span className="flex items-center gap-1.5 opacity-80">
+                        <span className="flex items-center justify-center gap-1.5 opacity-80">
                           {format(task.estimation.startDate, "MMM d")} —{" "}
                           {format(task.estimation.endDate, "MMM d")}
                         </span>
                       ) : (
-                        <span className="opacity-20 italic">No timeline</span>
+                        <span className="opacity-20 italic flex justify-center">No timeline</span>
                       )}
                     </TableCell>
-                    <TableCell className="px-4 border-r border-neutral-700">
-                      <div className="flex items-center gap-1.5 flex-wrap">
+                    <TableCell className="px-4 border-r border-b border-neutral-700">
+                      <div className="flex items-center justify-center gap-1.5 flex-wrap">
                         {task.type ? (
                             <div 
                               className={cn(
@@ -299,7 +298,7 @@ export const TableTab = ({ tasks }: TableTabProps) => {
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 border-r border-neutral-700">
+                    <TableCell className="px-4 border-r border-b border-neutral-700">
                       <div className="flex -space-x-1.5">
                         {task.assignedTo?.map((person, i) => (
                           <Avatar
@@ -317,11 +316,11 @@ export const TableTab = ({ tasks }: TableTabProps) => {
                         ))}
                       </div>
                     </TableCell>
-                    <TableCell className="px-4 border-r border-neutral-700">
+                    <TableCell className="px-4 border-r border-b border-neutral-700">
                       <PriorityBadge priority={task.priority} />
                     </TableCell>
                     <TableCell
-                      className="px-4 text-right"
+                      className="px-4 text-right border-b border-neutral-700"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <DropdownMenu>
