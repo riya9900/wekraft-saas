@@ -256,25 +256,27 @@ export const HeatmapPanel = memo(
       <div className="relative shrink-0 flex flex-col h-full z-10 transition-all duration-300">
         <div
           className={cn(
-            "h-full bg-sidebar border-sidebar-border transition-all duration-300 ease-in-out overflow-hidden flex flex-col",
+            "h-full bg-[#030303] border-r border-white/5 transition-all duration-300 ease-in-out overflow-hidden flex flex-col",
             isOpen
-              ? "w-96 border-r shadow-[2px_0_12px_rgba(0,0,0,0.01)]"
-              : "w-0 border-r-0 shadow-none",
+              ? "w-96 shadow-[2px_0_12px_rgba(0,0,0,0.4)]"
+              : "w-0 shadow-none",
           )}
         >
+
             
           <div className="w-96 h-full flex flex-col shrink-0">
             {/* Panel Header */}
-            <div className="flex items-center justify-between px-6 h-16 border-b shrink-0 bg-sidebar">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary/10 rounded-lg">
+            <div className="flex items-center justify-between px-6 h-16 border-b border-white/10 shrink-0 bg-[#080808]">
+              <div className="flex items-center gap-3 flex-none">
+                <div className="p-2 bg-zinc-900/50 rounded-lg border border-white/5">
                   <Network className="h-4 w-4 text-primary" />
                 </div>
                 <div>
-                  <h2 className="font-semibold text-sm ">Heatmap Panel</h2>
-                  <p className="text-xs text-muted-foreground">Directory Insights</p>
+                  <h2 className="font-semibold text-[15px] text-white">Heatmap Panel</h2>
+                  <p className="text-xs text-muted-foreground/50">Directory Insights</p>
                 </div>
               </div>
+
               
               <Button 
                 variant="ghost" 
@@ -291,13 +293,15 @@ export const HeatmapPanel = memo(
             <div className="flex-1 overflow-y-auto custom-scrollbar">
                 <div className="p-4 space-y-6">
                     {/* Repo Info Card */}
-                    <div className="bg-accent/30 rounded-xl p-4 border border-border/50">
-                        <div className="flex items-start justify-between mb-3">
+                    <div className="bg-[#0a0a0a] rounded-xl p-4 border border-white/10 space-y-3 shadow-sm">
+                        <div className="flex items-start justify-between">
                             <div className="space-y-1">
-                                <h2 className="font-bold text-base flex items-center gap-2">
-                                    <GitBranch className="w-4 h-4 text-primary"/>   
+                                <h2 className="font-bold text-base text-white flex items-center gap-2">
+                                    <GitBranch className="w-4 h-4 text-primary/80"/>   
                                     <span className="truncate max-w-[200px]">{repository?.repoName}</span>
                                 </h2>
+
+
                                 {repository && (
                                     <a
                                         href={repository.repoUrl}
@@ -316,24 +320,26 @@ export const HeatmapPanel = memo(
                         {/* Root Aggregate Stats */}
                         {structure && (
                             <div className="grid grid-cols-2 gap-3 mt-4">
-                                <div className="bg-background/50 rounded-lg p-2.5 border border-border/30">
-                                    <div className="flex items-center gap-2 text-muted-foreground mb-1">
+                                <div className="bg-[#0e0e0e] rounded-lg p-3 border border-white/5">
+                                    <div className="flex items-center gap-2 text-muted-foreground/40 mb-1.5">
                                         <Folder size={12} />
-                                        <span className="text-[10px] uppercase tracking-wider font-semibold">Folders</span>
+                                        <span className="text-[10px] uppercase tracking-[0.1em] font-black">Folders</span>
                                     </div>
-                                    <div className="text-xl font-bold font-mono text-primary">
+                                    <div className="text-xl font-bold font-mono text-primary/90">
                                         {structure.folderCount}
                                     </div>
                                 </div>
-                                <div className="bg-background/50 rounded-lg p-2.5 border border-border/30">
-                                    <div className="flex items-center gap-2 text-muted-foreground mb-1">
+                                <div className="bg-[#0e0e0e] rounded-lg p-3 border border-white/5">
+                                    <div className="flex items-center gap-2 text-muted-foreground/40 mb-1.5">
                                         <FileCode size={12} />
-                                        <span className="text-[10px] uppercase tracking-wider font-semibold">Files</span>
+                                        <span className="text-[10px] uppercase tracking-[0.1em] font-black">Files</span>
                                     </div>
-                                    <div className="text-xl font-bold font-mono text-primary">
+                                    <div className="text-xl font-bold font-mono text-primary/90">
                                         {structure.totalFileCount}
                                     </div>
                                 </div>
+
+
                             </div>
                         )}
                         
@@ -347,14 +353,15 @@ export const HeatmapPanel = memo(
 
                     {/* Folder Tree */}
                     <div className="space-y-1">
-                        <div className="flex items-center justify-between mb-2 px-1">
-                            <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">
+                        <div className="flex items-center justify-between mb-3 px-1">
+                            <span className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-[0.2em]">
                                 Directory Structure
                             </span>
-                            <span className="text-[10px] text-muted-foreground/60 italic">
+                            <span className="text-[10px] text-muted-foreground/30 italic">
                                 Folders & Files
                             </span>
                         </div>
+
                         
                         {isLoading && !structure ? (
                             <div className="space-y-2 pt-4">
@@ -389,10 +396,11 @@ export const HeatmapPanel = memo(
           <Button
             onClick={handleToggle}
             className={cn(
-              "bg-primary text-muted h-16! w-6! rounded-md  cursor-pointer shadow-lg hover:shadow-primary/20 transition-all",
-              !isOpen && "text-muted",
+              "bg-white! text-black! h-16! w-6! rounded-md cursor-pointer shadow-2xl transition-all",
+              !isOpen && "opacity-100",
             )}
           >
+
             {isOpen ? (
               <ChevronLeft size={16} className="" />
             ) : (
