@@ -178,11 +178,11 @@ export const HeatmapFlow = ({ structure }: HeatmapFlowProps) => {
                 source: parentId,
                 target: id,
                 type: 'smoothstep',
+                animated: true,
                 style: { 
-                    stroke: 'rgba(255, 255, 255, 0.2)', 
-                    strokeWidth: 1.5,
+                    stroke: 'rgba(59, 130, 246, 0.5)', 
+                    strokeWidth: 2,
                 },
-                // @ts-ignore - Smoothstep uses pathOptions in certain versions/implementations
                 pathOptions: {
                     borderRadius: 20,
                     offset: 30
