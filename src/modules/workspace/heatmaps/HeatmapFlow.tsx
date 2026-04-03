@@ -20,7 +20,7 @@ import {
 
 import '@xyflow/react/dist/style.css';
 import { FolderNode } from './action';
-import { Folder, MoveRight, Network } from 'lucide-react';
+import { Folder, MoveRight, Network, Plus, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // --- Custom Node Component ---
@@ -75,7 +75,7 @@ interface HeatmapFlowProps {
 const HeatmapFlowInner = ({ structure }: HeatmapFlowProps) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
-  const { fitView } = useReactFlow();
+  const { fitView, zoomIn, zoomOut } = useReactFlow();
   
   // Track expanded paths for toggleable layers
   const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set(["root"]));
@@ -243,23 +243,53 @@ const HeatmapFlowInner = ({ structure }: HeatmapFlowProps) => {
            </div>
         </Panel>
         
-        {/* Simplified Premium Legend */}
-        <Panel position="top-left" className="bg-[#050505]/95 backdrop-blur-xl p-8 rounded-[2rem] border border-white/10 space-y-6 shadow-2xl mt-8 ml-8">
-            <h4 className="text-[12px] font-black uppercase tracking-[0.3em] text-white flex items-center gap-3">
-                <div className="w-1 h-4 bg-white rounded-full" />
-                Network Map
-            </h4>
-            <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-4 text-zinc-400">
-                    <div className="w-5 h-5 rounded-full bg-gradient-to-r from-zinc-900 via-blue-600/20 to-blue-600/80 border border-blue-500/20 shadow-sm" />
-                    <span className="text-[13px] font-medium leading-none">Root Project</span>
-                </div>
-                <div className="flex items-center gap-4 text-zinc-400">
-                    <div className="w-5 h-5 rounded-full border-2 border-white/10 bg-zinc-900" />
-                    <span className="text-[13px] font-medium leading-none">Directory Module</span>
+        {/* Premium Legend & Controls Layout */}
+        <Panel position="top-left" className="mt-8 ml-8 flex items-start gap-4">
+            <div className="bg-[#050505]/95 backdrop-blur-xl p-8 rounded-[2rem] border border-white/10 space-y-6 shadow-2xl">
+                <h4 className="text-[12px] font-black uppercase tracking-[0.3em] text-white flex items-center gap-3">
+                    <div className="w-1 h-4 bg-white rounded-full" />
+                    Network Map
+                </h4>
+                <div className="flex flex-col gap-4">
+                    <div className="flex items-center gap-4 text-zinc-400">
+                        <div className="w-5 h-5 rounded-full bg-gradient-to-r from-zinc-900 via-blue-600/20 to-blue-600/80 border border-blue-500/20 shadow-sm" />
+                        <span className="text-[13px] font-medium leading-none">Root Project</span>
+                    </div>
+                    <div className="flex items-center gap-4 text-zinc-400">
+                        <div className="w-5 h-5 rounded-full border-2 border-white/10 bg-zinc-900" />
+                        <span className="text-[13px] font-medium leading-none">Directory Module</span>
+                    </div>
                 </div>
             </div>
+
+            {/* Compact Vertical Controls to the right of Legend */}
+            <div className="bg-[#050505]/90 backdrop-blur-xl p-1.5 rounded-2xl border border-white/10 flex flex-col gap-1 shadow-2xl">
+                <button 
+                onClick={() => fitView({ duration: 800, padding: 0.8 })}
+                className="p-2.5 bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white rounded-xl transition-all duration-200 group"
+                title="Reset View"
+                >
+                <Network size={16} className="group-hover:scale-110 transition-transform" />
+                </button>
+                <div className="h-px bg-white/5 mx-2" />
+                <button 
+                onClick={() => zoomIn({ duration: 300 })}
+                className="p-2.5 bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white rounded-xl transition-all duration-200 group"
+                title="Zoom In"
+                >
+                <Plus size={16} className="group-hover:scale-125 transition-transform" />
+                </button>
+                <button 
+                onClick={() => zoomOut({ duration: 300 })}
+                className="p-2.5 bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white rounded-xl transition-all duration-200 group"
+                title="Zoom Out"
+                >
+                <Minus size={16} className="group-hover:scale-125 transition-transform" />
+                </button>
+            </div>
         </Panel>
+
+
 
       </ReactFlow>
     </div>
