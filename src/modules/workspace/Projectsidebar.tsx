@@ -83,8 +83,8 @@ const workspaceMenu = [
     icon: PlaneTakeoff,
   },
   {
-    label: "Activity feed",
-    path: "workspace/activity",
+    label: "Review Agent",
+    path: "workspace/review-agent",
     icon: Activity,
   },
   {
