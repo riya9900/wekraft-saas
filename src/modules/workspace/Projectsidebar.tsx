@@ -182,7 +182,7 @@ export default function ProjectSidebar() {
         <SidebarMenuButton
           asChild
           tooltip="Inbox"
-          data-active={isActive(`/dashboard/my-projects/${slug}/inbox`)}
+          isActive={isActive(`/dashboard/my-projects/${slug}/inbox`)}
           className="group relative overflow-hidden mb-1.5 cursor-pointer"
         >
 
@@ -219,7 +219,7 @@ export default function ProjectSidebar() {
                 <SidebarMenuButton
                   asChild
                   tooltip="AI Assistant"
-                  data-active={isActiveExact("/dashboard/ai")}
+                  isActive={isActiveExact("/dashboard/ai")}
                   className="group relative overflow-hidden cursor-pointer"
                 >
                   <Link
@@ -295,7 +295,7 @@ export default function ProjectSidebar() {
             <SidebarMenuButton
               asChild
               tooltip="Workspace"
-              data-active={isActiveExact(`/dashboard/my-projects/${slug}/workspace`)}
+              isActive={isActiveExact(`/dashboard/my-projects/${slug}/workspace`)}
               className="group relative overflow-hidden cursor-pointer"
             >
 
@@ -414,7 +414,7 @@ export default function ProjectSidebar() {
                   key={item.path}
                   asChild
                   tooltip={item.label}
-                  data-active={isActive(href)}
+                  isActive={isActive(href)}
                   className="group relative overflow-hidden cursor-pointer"
                 >
 

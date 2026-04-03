@@ -535,7 +535,9 @@ function SidebarMenuButton({
 
   return (
     <Tooltip>
-      <TooltipTrigger asChild>{button}</TooltipTrigger>
+      <TooltipTrigger asChild onPointerDown={(e) => e.preventDefault()}>
+        {button}
+      </TooltipTrigger>
       <TooltipContent
         side="right"
         align="center"
