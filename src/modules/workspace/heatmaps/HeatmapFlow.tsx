@@ -9,6 +9,8 @@ import {
   useEdgesState,
   Panel,
   BackgroundVariant,
+  ReactFlowProvider,
+  useReactFlow,
   type Node,
   type Edge,
   Handle,
@@ -70,9 +72,10 @@ interface HeatmapFlowProps {
   structure: FolderNode | null;
 }
 
-export const HeatmapFlow = ({ structure }: HeatmapFlowProps) => {
+const HeatmapFlowInner = ({ structure }: HeatmapFlowProps) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+  const { fitView } = useReactFlow();
   
   // Track expanded paths for toggleable layers
   const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set(["root"]));
@@ -202,7 +205,16 @@ export const HeatmapFlow = ({ structure }: HeatmapFlowProps) => {
 
     setNodes(newNodes);
     setEdges(newEdges);
-  }, [structure, expandedPaths, setNodes, setEdges]);
+
+    // Automatic view fitting on update (smoothly)
+    setTimeout(() => {
+        fitView({ 
+            padding: 0.8, // Increased padding to make nodes look "not too big"
+            maxZoom: 0.85, // Constrained limit for premium look
+            duration: 1000 
+        });
+    }, 50);
+  }, [structure, expandedPaths, setNodes, setEdges, fitView]);
 
   return (
     <div className="w-full h-full bg-[#030303] overflow-hidden relative">
@@ -214,7 +226,7 @@ export const HeatmapFlow = ({ structure }: HeatmapFlowProps) => {
         onNodeClick={onNodeClick}
         nodeTypes={nodeTypes}
         fitView
-        fitViewOptions={{ padding: 0.5 }}
+        fitViewOptions={{ padding: 0.8, maxZoom: 0.85 }}
         colorMode="dark"
         proOptions={{ hideAttribution: true }}
         panOnScroll
@@ -251,5 +263,13 @@ export const HeatmapFlow = ({ structure }: HeatmapFlowProps) => {
 
       </ReactFlow>
     </div>
+  );
+};
+
+export const HeatmapFlow = ({ structure }: HeatmapFlowProps) => {
+  return (
+    <ReactFlowProvider>
+      <HeatmapFlowInner structure={structure} />
+    </ReactFlowProvider>
   );
 };
