@@ -50,10 +50,10 @@ const HeatmapPage = () => {
           if (open) setSidebarOpen(false);
         }}
       />
-      {/* REACT FLOW (DISABLED FOR NOW) */}
-      {/* <div className="flex-1 pl-8 pr- pt-0 pb-5 overflow-hidden">
+      {/* REACT FLOW MAP */}
+      <div className="flex-1 relative overflow-hidden">
         <HeatmapFlow structure={structure} />
-      </div> */}
+      </div>
 
 
     </div>
