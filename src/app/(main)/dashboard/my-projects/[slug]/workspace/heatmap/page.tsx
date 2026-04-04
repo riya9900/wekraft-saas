@@ -39,7 +39,7 @@ const HeatmapPage = () => {
   }, [sidebarOpen, isPanelOpen]);
 
   return (
-    <div className="flex h-svh w-full overflow-hidden bg-background">
+    <div className="flex min-h-svh w-full overflow-hidden bg-background">
       <HeatmapPanel
         isOpen={isPanelOpen}
         repoId={repoId}

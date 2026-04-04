@@ -176,7 +176,7 @@ export default function ProjectSidebar() {
       </SidebarHeader>
 
       {/* ───────── CONTENT ───────── */}
-      <SidebarContent className="px-2 py-2">
+      <SidebarContent className="px-2 py-5">
 
         {/* INBOX */}
         <SidebarMenuButton

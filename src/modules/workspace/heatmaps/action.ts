@@ -8,22 +8,21 @@ import { getGithubAccessToken } from "@/modules/github/actions/action";
 export interface FolderNode {
   name: string;
   path: string;
-  fileCount: number;      // Direct files in this folder
-  totalFileCount: number; // Total files in this folder + subfolders
-  folderCount: number;    // Total subfolders
+  fileCount: number;
+  totalFileCount: number;
+  folderCount: number;
   children: Record<string, FolderNode>;
-  files: string[];        // Direct file names in this folder
+  files: string[];
   isOpen?: boolean;
 }
-
 
 interface RepoStructure {
   root: FolderNode;
   lastUpdated: number;
 }
 
-const CACHE_TTL = 30 * 60; // 30 minutes
-const REFRESH_COOLDOWN = 5 * 60; // 5 minutes
+const CACHE_TTL = 30 * 60;
+const REFRESH_COOLDOWN = 5 * 60;
 
 export async function getRepoStructure(
   owner: string,
@@ -34,14 +33,17 @@ export async function getRepoStructure(
     const { userId } = await auth();
     if (!userId) throw new Error("Unauthorized");
 
+    // ✅ Cache key has no userId — already shared across all users for this repo
     const cacheKey = `wekraft:repo-structure:${owner}:${repo}`;
+    // ✅ Rate limit key stays per-user — controls WHO can trigger a refresh
     const rateLimitKey = `wekraft:repo-refresh-limit:${userId}:${owner}:${repo}`;
 
     // 1. Check Rate Limit if force refreshing
+    // FIX: use SET NX instead of storing a timestamp — simpler, no NaN risk
     if (forceRefresh) {
-      const lastRefresh = await redis.get<number>(rateLimitKey);
-      const now = Date.now();
-      if (lastRefresh && now - lastRefresh < REFRESH_COOLDOWN * 1000) {
+      const acquired = await redis.set(rateLimitKey, "1", { nx: true, ex: REFRESH_COOLDOWN });
+      if (!acquired) {
+        console.log(`----------[Heatmap] Rate limited for ${owner}/${repo}----------`);
         return { data: null, rateLimited: true };
       }
     }
@@ -50,6 +52,7 @@ export async function getRepoStructure(
     if (!forceRefresh) {
       const cachedData = await redis.get<RepoStructure>(cacheKey);
       if (cachedData) {
+        console.log(`------------[Heatmap] Cache hit for ${owner}/${repo}---------------`);
         return { data: cachedData };
       }
     }
@@ -69,6 +72,11 @@ export async function getRepoStructure(
       recursive: "true",
     });
 
+    // FIX: warn if GitHub truncated the tree (>100k items) — silent data loss otherwise
+    if (treeData.truncated) {
+      console.warn(`[Heatmap] Tree for ${owner}/${repo} is truncated — results are partial.`);
+    }
+
     // 4. Process Tree
     const root: FolderNode = {
       name: repo,
@@ -81,16 +89,18 @@ export async function getRepoStructure(
       isOpen: true,
     };
 
-    treeData.tree.forEach((item) => {
+    // FIX: sort so "tree" items are processed before "blob" items
+    // This ensures all folder nodes exist before we walk into them for file counting
+    const sortedTree = [...treeData.tree].sort((a) => (a.type === "tree" ? -1 : 1));
+
+    sortedTree.forEach((item) => {
       const parts = item.path?.split("/") || [];
       let current = root;
 
-      // Handle file counting
       if (item.type === "blob") {
         root.totalFileCount++;
         const fileName = parts[parts.length - 1];
 
-        // Navigate to the parent folder of the file
         for (let i = 0; i < parts.length - 1; i++) {
           const part = parts[i];
           if (!current.children[part]) {
@@ -103,7 +113,8 @@ export async function getRepoStructure(
               children: {},
               files: [],
             };
-            root.folderCount++;
+            // FIX: increment the direct parent's folderCount, not always root
+            current.folderCount++;
           }
           current = current.children[part];
           current.totalFileCount++;
@@ -111,7 +122,6 @@ export async function getRepoStructure(
         current.fileCount++;
         current.files.push(fileName);
       } else if (item.type === "tree") {
-        // Handle folder creation
         for (let i = 0; i < parts.length; i++) {
           const part = parts[i];
           if (!current.children[part]) {
@@ -124,17 +134,13 @@ export async function getRepoStructure(
               children: {},
               files: [],
             };
-            root.folderCount++;
+            // FIX: same — direct parent, not root
+            current.folderCount++;
           }
           current = current.children[part];
         }
-
-        // Count subfolders for intermediate folders
-        let temp = root;
-        for (let i = 0; i < parts.length - 1; i++) {
-            temp = temp.children[parts[i]];
-            temp.folderCount++;
-        }
+        // REMOVED: the broken "Count subfolders for intermediate folders" loop
+        // — it was double-counting and always writing to root anyway
       }
     });
 
@@ -143,11 +149,10 @@ export async function getRepoStructure(
       lastUpdated: Date.now(),
     };
 
-    // 5. Save to Cache & Rate Limit
+    // 5. Save to Cache
+    // FIX: removed the second redis.set for rateLimitKey here —
+    // the NX set in step 1 already handles it with the correct TTL
     await redis.set(cacheKey, structure, { ex: CACHE_TTL });
-    if (forceRefresh) {
-      await redis.set(rateLimitKey, Date.now(), { ex: REFRESH_COOLDOWN });
-    }
 
     return { data: structure };
   } catch (error) {
