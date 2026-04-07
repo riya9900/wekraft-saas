@@ -429,6 +429,81 @@ export const getProjectByInviteCode = query({
       description: project.description,
       isPublic: project.isPublic,
       slug: project.slug,
+      ownerId: project.ownerId,
     };
+  },
+});
+
+// ====================================
+// CREATE JOIN REQUEST
+// ====================================
+export const createJoinRequest = mutation({
+  args: {
+    projectId: v.id("projects"),
+    message: v.optional(v.string()),
+    source: v.union(v.literal("invited"), v.literal("manual")),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Unauthenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("clerkToken", identity.tokenIdentifier),
+      )
+      .unique();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const project = await ctx.db.get(args.projectId);
+    if (!project) {
+      throw new Error("Project not found");
+    }
+    // Check if user is the owner
+    if (project.ownerId === user._id) {
+      throw new Error("You are the owner of this project");
+    }
+
+    // Check if user is already a member
+    const existingMember = await ctx.db
+      .query("projectMembers")
+      .withIndex("by_project", (q) => q.eq("projectId", args.projectId))
+      .filter((q) => q.eq(q.field("userId"), user._id))
+      .unique();
+
+    if (existingMember) {
+      throw new Error("You are already a member of this project");
+    }
+
+    // Check if there is already a pending request
+    const existingRequest = await ctx.db
+      .query("projectJoinRequests")
+      .withIndex("by_project", (q) => q.eq("projectId", args.projectId))
+      .filter((q) => q.eq(q.field("userId"), user._id))
+      .filter((q) => q.eq(q.field("status"), "pending"))
+      .unique();
+
+    if (existingRequest) {
+      throw new Error("You already have a pending join request for this project");
+    }
+
+    const requestId = await ctx.db.insert("projectJoinRequests", {
+      projectId: args.projectId,
+      userId: user._id,
+      userName: user.name || "Anonymous",
+      userImage: user.avatarUrl,
+      message: args.message,
+      source: args.source,
+      status: "pending",
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    });
+
+    return requestId;
   },
 });
