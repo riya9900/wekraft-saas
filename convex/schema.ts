@@ -34,6 +34,7 @@ export default defineSchema({
 
   repositories: defineTable({
     githubId: v.int64(),
+    isWebhookConnected: v.boolean(), // default false
     repoName: v.string(),
     repoOwner: v.string(),
     repoFullName: v.string(),

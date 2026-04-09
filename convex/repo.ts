@@ -49,6 +49,7 @@ export const connectRepository = mutation({
         repoUrl: args.repoUrl,
         userId: user._id,
         language: args.language,
+        isWebhookConnected: false,
         createdAt: Date.now(),
         updatedAt: Date.now(),
       });
