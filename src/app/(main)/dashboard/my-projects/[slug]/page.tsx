@@ -27,10 +27,12 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import Image from "next/image";
 import { ProjectJoinRequests } from "@/modules/project/project-join-requests";
+import { useRouter } from "next/navigation";
 
 const ProjectPage = () => {
   const params = useParams();
   const slug = params.slug as string;
+  const router = useRouter();
 
   const project = useQuery(api.project.getProjectBySlug, { slug });
   const projectInviteLink = project?.inviteLink;
@@ -61,11 +63,26 @@ const ProjectPage = () => {
             <LucideLayers3 className="w-6 h-6 text-primary" />{" "}
             {project.projectName}
           </h1>
-          <Link href={""}>
+          {project?.repoFullName && project?.repositoryId ? (
+            <Link href={`/dashboard/my-projects/${project?.slug}/workspace`}>
+              <p className="text-muted-foreground text-sm cursor-pointer hover:text-primary/90">
+                <Link2 className="inline w-5 h-5" /> {project.repoFullName}
+              </p>
+            </Link>
+          ) : (
             <p className="text-muted-foreground text-sm cursor-pointer hover:text-primary/90">
-              <Link2 className="inline w-5 h-5" /> {project.repoFullName}
+              No repository connected{" "}
+              <span
+                className="text-primary hover:underline"
+                onClick={() => {
+                  router.push(`/dashboard/repositories`);
+                }}
+              >
+                Click here to connect{" "}
+                <ExternalLink className="inline w-3 h-3 ml-0.5 -mt-1" />
+              </span>
             </p>
-          </Link>
+          )}
         </div>
         <div className="flex gap-5">
           <Link href={`/dashboard/`}>

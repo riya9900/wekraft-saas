@@ -189,7 +189,6 @@ export default defineSchema({
     .index("by_task", ["taskId"])
     .index("by_user", ["userId"])
     .index("by_task_user", ["taskId", "userId"]),
-
     // ----------------------------------------------------
 
     issues: defineTable({

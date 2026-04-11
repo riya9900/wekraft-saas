@@ -116,4 +116,21 @@ export const getRepositoryById = query({
   },
 });
 
+export const setWebhookConnected = mutation({
+  args: { githubId: v.int64() },
+  handler: async (ctx, args) => {
+    const repo = await ctx.db
+      .query("repositories")
+      .withIndex("by_github_id", (q) => q.eq("githubId", args.githubId))
+      .unique();
+
+    if (repo) {
+      await ctx.db.patch(repo._id, {
+        isWebhookConnected: true,
+        updatedAt: Date.now(),
+      });
+    }
+  },
+});
+
 
