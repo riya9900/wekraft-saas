@@ -16,6 +16,7 @@ import { api } from "../../../../../../../../convex/_generated/api";
 import { useParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import { CreateIssueDialog } from "@/modules/workspace/CreateIssueDialog";
 
 const users = [
   { name: "Ritesh", img: "https://i.pravatar.cc/40?img=1" },
@@ -75,16 +76,27 @@ const IssuesPage = () => {
           Filters
         </Button>
 
-        <Button size="sm" className="text-xs">
-          New Issue
-          <Bug className="w-5 h-5 mr-2" />
-        </Button>
+        {project && (
+          <CreateIssueDialog
+            projectId={project._id}
+            projectName={projectName}
+            repoFullName={project.repoFullName}
+            trigger={
+              <Button size="sm" className="text-xs">
+                New Issue
+                <Bug className="w-5 h-5 mr-2" />
+              </Button>
+            }
+          />
+        )}
       </div>
 
+      {/* BODY */}
       <main className="w-full h-full min-h-[500px] flex items-center justify-center">
+        {/* Empty State */}
         <div className="flex flex-col items-start justify-center space-y-1.5 p-4 w-[360px] mx-auto">
           <Image
-            src="/pat102.svg"
+            src="/pat101.svg"
             alt="Empty Workspace"
             width={100}
             height={100}
@@ -97,14 +109,23 @@ const IssuesPage = () => {
           </p>
 
           <div className="flex items-center gap-4 mt-2">
-            <Button
-              variant="default"
-              size="sm"
-              className="rounded-full text-[11px]"
-            >
-              <Bug className="w-4 h-4" />
-              Add Issue
-            </Button>
+            {project && (
+              <CreateIssueDialog
+                projectId={project._id}
+                projectName={projectName}
+                repoFullName={project.repoFullName}
+                trigger={
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="rounded-full text-[11px]"
+                  >
+                    <Bug className="w-4 h-4" />
+                    Add Issue
+                  </Button>
+                }
+              />
+            )}
             <Button
               variant="outline"
               size="sm"

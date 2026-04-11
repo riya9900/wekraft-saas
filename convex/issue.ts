@@ -32,8 +32,9 @@ export const createIssue = mutation({
       v.literal("reopened"),
       v.literal("closed"),
     ),
-    type: v.union(v.literal("manual"), v.literal("github")),
+    type: v.union(v.literal("user-created"), v.literal("github")),
     githubIssueUrl: v.optional(v.string()),
+    fileLinked: v.optional(v.string()),
     taskId: v.optional(v.id("tasks")),
     projectId: v.id("projects"),
     IssueAssignee: v.optional(
@@ -146,6 +147,7 @@ export const updateIssue = mutation({
     issueId: v.id("issues"),
     title: v.optional(v.string()),
     description: v.optional(v.string()),
+    fileLinked: v.optional(v.string()),
     environment: v.optional(
       v.union(
         v.literal("local"),

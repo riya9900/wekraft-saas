@@ -195,6 +195,7 @@ export default defineSchema({
     issues: defineTable({
       title: v.string(),
       description: v.optional(v.string()),
+      fileLinked: v.optional(v.string()),
       environment : v.optional(v.union(v.literal("local"),v.literal("dev"), v.literal("staging"), v.literal("production"))),
       severity: v.optional(v.union(v.literal("critical"), v.literal("medium"), v.literal("low"))),
       due_date:v.optional(v.number()), // for tracking
@@ -206,7 +207,8 @@ export default defineSchema({
         v.literal("closed"),
       ),
       type: v.union(
-        v.literal("manual"),
+        v.literal("user-created"),
+        v.literal("task-issue"),
         v.literal("github")
       ),
       githubIssueUrl: v.optional(v.string()), // if its from github.
